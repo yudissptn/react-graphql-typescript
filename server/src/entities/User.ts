@@ -20,6 +20,10 @@ export class User {
   @Property({ type: "text", unique: true, length: 255 })
   username!: string;
 
+  @Field()
+  @Property({ type: "text", unique: true, length: 255 })
+  email!: string;
+
   @Property({ type: "text" })
   password!: string;
 }
