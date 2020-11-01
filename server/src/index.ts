@@ -13,6 +13,7 @@ import cors from "cors";
 import { createConnection } from "typeorm";
 import { Post } from "./entities/Post";
 import { User } from "./entities/User";
+import path from "path";
 
 const main = async () => {
   const conn = await createConnection({
@@ -23,7 +24,12 @@ const main = async () => {
     logging: true,
     synchronize: true,
     entities: [Post, User],
+    migrations: [path.join(__dirname, "./migrations/*")],
   });
+
+  await conn.runMigrations();
+
+  // await Post.delete({});
 
   const app = express();
 
