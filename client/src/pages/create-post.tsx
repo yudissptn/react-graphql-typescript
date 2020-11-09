@@ -1,8 +1,5 @@
-import React, { useEffect } from "react";
-import { Wrapper } from "../components/Wrapper";
+import React from "react";
 import { Formik, Form } from "formik";
-import login from "./login";
-import { toErrorMap } from "../utils/toErrorMap";
 import { InputField } from "../components/InputField";
 import { Box, Button } from "@chakra-ui/core";
 import { useCreatePostMutation } from "../generated/graphql";
