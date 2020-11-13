@@ -19,6 +19,7 @@ import { betterUpdateQuery } from "./betterUpdateQuery";
 import Router from "next/router";
 import gql from "graphql-tag";
 import { isServer } from "./isServer";
+import { multipartFetchExchange } from "@urql/exchange-multipart-fetch";
 
 export const errorExchange: Exchange = ({ forward }) => (ops$) => {
   return pipe(
@@ -152,6 +153,7 @@ export const createUrqlClient = (ssrExchange: any, ctx: any) => {
       errorExchange,
       ssrExchange,
       fetchExchange,
+      multipartFetchExchange,
     ],
   };
 };
