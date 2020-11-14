@@ -1,6 +1,7 @@
 import aws from "aws-sdk";
 import { v4 } from "uuid";
 import { Upload } from "../resolvers/Upload";
+import { createWriteStream } from "fs";
 
 const s3 = new aws.S3({
   accessKeyId: process.env.AWS_ACCESS_ID,
@@ -13,7 +14,7 @@ const s3DefaultParams = {
   Conditions: [["content-length-range", 0, 1024000], { acl: "public-read" }],
 };
 
-export const handleFileUpload = async (file: Upload, user: string) => {
+export const handleFileUploadS3 = async (file: Upload, user: string) => {
   const { createReadStream, filename } = await file;
 
   const key = v4();
@@ -38,7 +39,7 @@ export const handleFileUpload = async (file: Upload, user: string) => {
   });
 };
 
-export const handleDeleteImage = async (path: string) => {
+export const handleDeleteImageS3 = async (path: string) => {
   const params = {
     Bucket: s3DefaultParams.Bucket,
     Delete: {
@@ -55,5 +56,22 @@ export const handleDeleteImage = async (path: string) => {
     if (err) console.log(err, err.stack);
     // error
     else console.log(`Deleted pict: ${path}`, data); // deleted
+  });
+};
+
+export const handleUploadLocal = async (file: Upload, user: string) => {
+  const { createReadStream, filename } = await file;
+  const writableStream = createWriteStream(
+    `${__dirname}/../../../images/${user}/${filename}`,
+    { autoClose: true }
+  );
+  console.log(file);
+  return new Promise((res, _rej) => {
+    createReadStream()
+      .pipe(writableStream)
+      .on("finish", () => res(filename))
+      .on("error", () => {
+        throw Error("Upload failed");
+      });
   });
 };

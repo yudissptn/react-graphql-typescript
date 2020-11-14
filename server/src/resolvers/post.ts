@@ -18,7 +18,7 @@ import { isAuth } from "../middleware/isAuth";
 import { getConnection } from "typeorm";
 import { Updoot } from "../entities/Updoot";
 import { User } from "../entities/User";
-import { handleDeleteImage } from "../utils/s3Handler";
+import { handleDeleteImageS3 } from "../utils/fileHandler";
 
 @InputType()
 class PostInput {
@@ -210,7 +210,7 @@ export class PostResolver {
     // }
     // await Updoot.delete({ postId: id });
     // await Post.delete({ id });
-    await handleDeleteImage(pictUrl);
+    await handleDeleteImageS3(pictUrl);
 
     await Post.delete({ id, creatorId: req.session.userId });
 

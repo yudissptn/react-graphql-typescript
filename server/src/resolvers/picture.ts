@@ -1,6 +1,6 @@
 import { Resolver, Mutation, Arg, ObjectType, Field } from "type-graphql";
 import { GraphQLUpload, FileUpload } from "graphql-upload";
-import { handleFileUpload } from "../utils/s3Handler";
+import { handleFileUploadS3 } from "../utils/fileHandler";
 
 @ObjectType()
 class S3Object {
@@ -21,7 +21,7 @@ export class PictureResolver {
     @Arg("picture", () => GraphQLUpload) picture: FileUpload,
     @Arg("user", () => String) user: string
   ) {
-    const response = await handleFileUpload(picture, user);
+    const response = await handleFileUploadS3(picture, user);
     return response;
   }
 }
