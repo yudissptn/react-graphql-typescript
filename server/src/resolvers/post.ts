@@ -18,6 +18,7 @@ import { isAuth } from "../middleware/isAuth";
 import { getConnection } from "typeorm";
 import { Updoot } from "../entities/Updoot";
 import { User } from "../entities/User";
+import { handleDeleteImage } from "../utils/s3Handler";
 
 @InputType()
 class PostInput {
@@ -25,6 +26,8 @@ class PostInput {
   title: string;
   @Field()
   text: string;
+  @Field()
+  pictUrl: string;
 }
 
 @ObjectType()
@@ -194,6 +197,7 @@ export class PostResolver {
   @UseMiddleware(isAuth)
   async deletePost(
     @Arg("id", () => Int) id: number,
+    @Arg("pictUrl", () => String) pictUrl: string,
     @Ctx() { req }: MyContext
   ): Promise<Boolean> {
     //not cascade way
@@ -206,6 +210,7 @@ export class PostResolver {
     // }
     // await Updoot.delete({ postId: id });
     // await Post.delete({ id });
+    await handleDeleteImage(pictUrl);
 
     await Post.delete({ id, creatorId: req.session.userId });
 

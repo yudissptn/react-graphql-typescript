@@ -5,48 +5,70 @@ import { Box, Button } from "@chakra-ui/core";
 import {
   useCreatePostMutation,
   useAddProfilePictureMutation,
+  useMeQuery,
 } from "../generated/graphql";
 import { useRouter } from "next/router";
 import { Layout } from "../components/Layout";
 import useIsAuth from "../utils/useIsAuth";
 import { useDropzone } from "react-dropzone";
 import { withApollo } from "../utils/withApollo";
+import { isServer } from "../utils/isServer";
 
 interface createPostProps {}
 
 const createPost: React.FC<createPostProps> = ({}) => {
+  const [preview, setPreview] = useState("");
+  const [errors, setErrors] = useState("");
   const router = useRouter();
   useIsAuth();
   const [createPost] = useCreatePostMutation();
   const [addProfilePicture] = useAddProfilePictureMutation();
   const [uploadedPict, setPicture] = useState(null);
+  const { data } = useMeQuery({
+    skip: isServer(),
+  });
 
-  const onDrop = useCallback((acceptedFiles) => {
-    // Do something with the files
-    console.log(acceptedFiles);
-    setPicture(acceptedFiles[0]);
-  }, []);
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
+  const onDrop = useCallback(
+    async ([acceptedFiles]) => {
+      // Do something with the files
+      if (acceptedFiles) {
+        setPreview(URL.createObjectURL(acceptedFiles));
+        setPicture(acceptedFiles);
+      } else {
+        setErrors("Something went wrong. Check file type and size (max. 1 MB)");
+      }
+    },
+    [setPicture]
+  );
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+    onDrop,
+    maxSize: 1024000,
+  });
   return (
     <Layout variant="small">
       <Formik
-        initialValues={{ title: "", text: "" }}
+        initialValues={{ title: "", text: "", pictUrl: "" }}
         onSubmit={async (values) => {
+          const { data: pict, errors: errorUpload } = await addProfilePicture({
+            variables: {
+              picture: uploadedPict,
+              user: String(data?.me?.username),
+            },
+          });
+          if (errorUpload) {
+            setErrors(`Error upload to S3: ${errorUpload[0].message}`);
+          }
           const { errors } = await createPost({
-            variables: { input: values },
+            variables: {
+              input: {
+                ...values,
+                pictUrl: pict ? pict.addProfilePicture.Location : "error link",
+              },
+            },
             update: (cache) => {
               cache.evict({ fieldName: "posts" });
             },
           });
-          console.log(uploadedPict);
-          // const { errors: errorUpload } = await addProfilePicture({
-          //   variables: {
-          //     picture: uploadedPict,
-          //   },
-          // });
-          // if (errorUpload) {
-          //   throw Error(errorUpload[0].message);
-          // }
           if (!errors) {
             router.push("/");
           }
@@ -71,6 +93,12 @@ const createPost: React.FC<createPostProps> = ({}) => {
                 <p>Drag 'n' drop some files here, or click to select files</p>
               )}
             </div>
+            {preview && (
+              <div>
+                <img src={preview} />
+              </div>
+            )}
+            {errors && <span>{errors}</span>}
             <Button
               mt={4}
               isLoading={isSubmitting}

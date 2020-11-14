@@ -20,13 +20,14 @@ import { Updoot } from "./entities/Updoot";
 import { createUserLoader } from "./utils/createUserLoader";
 import { createUpdootLoader } from "./utils/createUpdootLoader";
 import { graphqlUploadExpress } from "graphql-upload";
+import { handleDeleteImage } from "./utils/s3Handler";
 
 const main = async () => {
   const conn = await createConnection({
     type: "postgres",
     url: process.env.DATABASE_URL,
     logging: true,
-    // synchronize: true,
+    synchronize: true,
     entities: [Post, User, Updoot],
     migrations: [path.join(__dirname, "./migrations/*")],
   });

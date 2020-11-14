@@ -43,6 +43,7 @@ export type Post = {
   id: Scalars['Float'];
   title: Scalars['String'];
   text: Scalars['String'];
+  pictUrl: Scalars['String'];
   points: Scalars['Float'];
   voteStatus?: Maybe<Scalars['Int']>;
   creatorId: Scalars['Float'];
@@ -72,7 +73,7 @@ export type Mutation = {
   register: UserResponse;
   login: UserResponse;
   logout: Scalars['Boolean'];
-  addProfilePicture: Scalars['String'];
+  addProfilePicture: S3Object;
 };
 
 
@@ -95,6 +96,7 @@ export type MutationUpdatePostArgs = {
 
 
 export type MutationDeletePostArgs = {
+  pictUrl: Scalars['String'];
   id: Scalars['Int'];
 };
 
@@ -122,12 +124,14 @@ export type MutationLoginArgs = {
 
 
 export type MutationAddProfilePictureArgs = {
+  user: Scalars['String'];
   picture: Scalars['Upload'];
 };
 
 export type PostInput = {
   title: Scalars['String'];
   text: Scalars['String'];
+  pictUrl: Scalars['String'];
 };
 
 export type UserResponse = {
@@ -148,10 +152,18 @@ export type UsernamePasswordInput = {
   email: Scalars['String'];
 };
 
+export type S3Object = {
+  __typename?: 'S3Object';
+  ETag: Scalars['String'];
+  Location: Scalars['String'];
+  Key: Scalars['String'];
+  Bucket: Scalars['String'];
+};
+
 
 export type PostSnippetFragment = (
   { __typename?: 'Post' }
-  & Pick<Post, 'id' | 'createdAt' | 'updatedAt' | 'title' | 'textSnippet' | 'points' | 'voteStatus'>
+  & Pick<Post, 'id' | 'createdAt' | 'updatedAt' | 'title' | 'pictUrl' | 'textSnippet' | 'points' | 'voteStatus'>
   & { creator: (
     { __typename?: 'User' }
     & Pick<User, 'id' | 'username'>
@@ -181,12 +193,16 @@ export type RegularUserResponseFragment = (
 
 export type AddProfilePictureMutationVariables = Exact<{
   picture: Scalars['Upload'];
+  user: Scalars['String'];
 }>;
 
 
 export type AddProfilePictureMutation = (
   { __typename?: 'Mutation' }
-  & Pick<Mutation, 'addProfilePicture'>
+  & { addProfilePicture: (
+    { __typename?: 'S3Object' }
+    & Pick<S3Object, 'ETag' | 'Location' | 'Key' | 'Bucket'>
+  ) }
 );
 
 export type ChangePasswordMutationVariables = Exact<{
@@ -218,6 +234,7 @@ export type CreatePostMutation = (
 
 export type DeletePostMutationVariables = Exact<{
   id: Scalars['Int'];
+  pictUrl: Scalars['String'];
 }>;
 
 
@@ -349,6 +366,7 @@ export const PostSnippetFragmentDoc = gql`
   createdAt
   updatedAt
   title
+  pictUrl
   textSnippet
   points
   voteStatus
@@ -382,8 +400,13 @@ export const RegularUserResponseFragmentDoc = gql`
     ${RegularErrorFragmentDoc}
 ${RegularUserFragmentDoc}`;
 export const AddProfilePictureDocument = gql`
-    mutation AddProfilePicture($picture: Upload!) {
-  addProfilePicture(picture: $picture)
+    mutation AddProfilePicture($picture: Upload!, $user: String!) {
+  addProfilePicture(picture: $picture, user: $user) {
+    ETag
+    Location
+    Key
+    Bucket
+  }
 }
     `;
 export type AddProfilePictureMutationFn = Apollo.MutationFunction<AddProfilePictureMutation, AddProfilePictureMutationVariables>;
@@ -402,6 +425,7 @@ export type AddProfilePictureMutationFn = Apollo.MutationFunction<AddProfilePict
  * const [addProfilePictureMutation, { data, loading, error }] = useAddProfilePictureMutation({
  *   variables: {
  *      picture: // value for 'picture'
+ *      user: // value for 'user'
  *   },
  * });
  */
@@ -481,8 +505,8 @@ export type CreatePostMutationHookResult = ReturnType<typeof useCreatePostMutati
 export type CreatePostMutationResult = Apollo.MutationResult<CreatePostMutation>;
 export type CreatePostMutationOptions = Apollo.BaseMutationOptions<CreatePostMutation, CreatePostMutationVariables>;
 export const DeletePostDocument = gql`
-    mutation DeletePost($id: Int!) {
-  deletePost(id: $id)
+    mutation DeletePost($id: Int!, $pictUrl: String!) {
+  deletePost(id: $id, pictUrl: $pictUrl)
 }
     `;
 export type DeletePostMutationFn = Apollo.MutationFunction<DeletePostMutation, DeletePostMutationVariables>;
@@ -501,6 +525,7 @@ export type DeletePostMutationFn = Apollo.MutationFunction<DeletePostMutation, D
  * const [deletePostMutation, { data, loading, error }] = useDeletePostMutation({
  *   variables: {
  *      id: // value for 'id'
+ *      pictUrl: // value for 'pictUrl'
  *   },
  * });
  */

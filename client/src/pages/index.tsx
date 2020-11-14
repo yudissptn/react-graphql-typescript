@@ -1,4 +1,13 @@
-import { Box, Button, Flex, Heading, Link, Stack, Text } from "@chakra-ui/core";
+import {
+  Box,
+  Button,
+  Flex,
+  Heading,
+  Link,
+  Stack,
+  Text,
+  Image,
+} from "@chakra-ui/core";
 import NextLink from "next/link";
 import { EditDeletePostButton } from "../components/EditDeletePostButton";
 import { Layout } from "../components/Layout";
@@ -32,7 +41,9 @@ const Index = () => {
           {data!.posts.posts.map((p) =>
             !p ? null : (
               <Flex p={5} shadow="md" borderWidth="1px">
-                <UpdootSection post={p} />
+                <Box mb="auto">
+                  <UpdootSection post={p} />
+                </Box>
                 <Box flex={1}>
                   <NextLink href="/post/[id]" as={`/post/${p.id}`}>
                     <Link>
@@ -41,13 +52,19 @@ const Index = () => {
                   </NextLink>
                   <Text>posted by: {p.creator.username}</Text>
                   <Flex align="center">
-                    <Text flex={1} mt={4}>
-                      {p.textSnippet}
-                    </Text>
+                    <Box>
+                      <Text flex={1} mt={4} mb={4}>
+                        {p.textSnippet}
+                      </Text>
+                      <Image src={p.pictUrl} />
+                    </Box>
+                  </Flex>
+                  <Flex>
                     <Box ml="auto">
                       <EditDeletePostButton
                         id={p.id}
                         creatorId={p.creator.id}
+                        pictUrl={p.pictUrl}
                       />
                     </Box>
                   </Flex>

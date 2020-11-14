@@ -2,6 +2,16 @@ import { createWithApollo } from "./createWithApollo";
 import { ApolloClient, InMemoryCache } from "@apollo/client";
 import { PaginatedPosts } from "../generated/graphql";
 import { NextPageContext } from "next";
+import { createUploadLink } from "apollo-upload-client";
+
+const uploadLink = createUploadLink({
+  uri: process.env.NEXT_PUBLIC_API_URL, // Apollo Server is served from port 4000
+  headers: {
+    "keep-alive": "true",
+  },
+  fetch,
+  fetchOptions: { credentials: "include" },
+});
 
 const createClient = (ctx: NextPageContext) =>
   new ApolloClient({
@@ -32,6 +42,7 @@ const createClient = (ctx: NextPageContext) =>
         },
       },
     }),
+    link: uploadLink,
   });
 
 export const withApollo = createWithApollo(createClient);

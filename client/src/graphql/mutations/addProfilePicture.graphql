@@ -1,3 +1,8 @@
-mutation AddProfilePicture($picture: Upload!) {
-  addProfilePicture(picture: $picture)
+mutation AddProfilePicture($picture: Upload!, $user: String!) {
+  addProfilePicture(picture: $picture, user: $user) {
+    ETag
+    Location
+    Key
+    Bucket
+  }
 }
