@@ -39,6 +39,7 @@ export const Post = ({}) => {
       <EditDeletePostButton
         id={data.post.id}
         creatorId={data.post.creator.id}
+        pictUrl={data.post.pictUrl}
       />
     </Layout>
   );

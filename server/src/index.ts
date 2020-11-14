@@ -20,9 +20,9 @@ import { Updoot } from "./entities/Updoot";
 import { createUserLoader } from "./utils/createUserLoader";
 import { createUpdootLoader } from "./utils/createUpdootLoader";
 import { graphqlUploadExpress } from "graphql-upload";
-import { handleDeleteImage } from "./utils/s3Handler";
 
 const main = async () => {
+  //@ts-ignore
   const conn = await createConnection({
     type: "postgres",
     url: process.env.DATABASE_URL,
