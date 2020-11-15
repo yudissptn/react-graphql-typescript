@@ -1,7 +1,7 @@
 import aws from "aws-sdk";
 import { v4 } from "uuid";
 import { Upload } from "../resolvers/Upload";
-import { createWriteStream } from "fs";
+import { createWriteStream, existsSync, mkdirSync } from "fs";
 
 const s3 = new aws.S3({
   accessKeyId: process.env.AWS_ACCESS_ID,
@@ -61,17 +61,32 @@ export const handleDeleteImageS3 = async (path: string) => {
 
 export const handleUploadLocal = async (file: Upload, user: string) => {
   const { createReadStream, filename } = await file;
-  const writableStream = createWriteStream(
-    `${__dirname}/../../../images/${user}/${filename}`,
-    { autoClose: true }
-  );
-  console.log(file);
+
+  const baseAssetDir = `${__dirname}/../../../client/public/images`;
+
+  if (!existsSync(`${baseAssetDir}/${user}/`)) {
+    console.log("not exists");
+    mkdirSync(`${baseAssetDir}/${user}/`, { recursive: true });
+  }
+
+  const path = `${baseAssetDir}/${user}/${filename}`;
+
+  const writableStream = createWriteStream(path, { autoClose: true });
+  console.log(path);
   return new Promise((res, _rej) => {
     createReadStream()
       .pipe(writableStream)
-      .on("finish", () => res(filename))
-      .on("error", () => {
-        throw Error("Upload failed");
+      .on("finish", () =>
+        res({
+          ETag: `Local pict ${filename}`,
+          Location: `/images/${user}/${filename}`,
+          Key: "Local Key",
+          Bucket: "Local Bucket",
+        })
+      )
+      .on("error", (error) => {
+        console.log(error.message);
+        throw Error("Upload failed: ");
       });
   });
 };
