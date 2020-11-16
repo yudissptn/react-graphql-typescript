@@ -1,7 +1,7 @@
 import aws from "aws-sdk";
 import { v4 } from "uuid";
 import { Upload } from "../resolvers/Upload";
-import { createWriteStream, existsSync, mkdirSync } from "fs";
+import { createWriteStream, existsSync, mkdirSync, unlinkSync } from "fs";
 
 const s3 = new aws.S3({
   accessKeyId: process.env.AWS_ACCESS_ID,
@@ -59,17 +59,17 @@ export const handleDeleteImageS3 = async (path: string) => {
   });
 };
 
+const baseLocalDir = `${__dirname}/../../../client/public/images`;
+
 export const handleUploadLocal = async (file: Upload, user: string) => {
   const { createReadStream, filename } = await file;
 
-  const baseAssetDir = `${__dirname}/../../../client/public/images`;
-
-  if (!existsSync(`${baseAssetDir}/${user}/`)) {
+  if (!existsSync(`${baseLocalDir}/${user}/`)) {
     console.log("not exists");
-    mkdirSync(`${baseAssetDir}/${user}/`, { recursive: true });
+    mkdirSync(`${baseLocalDir}/${user}/`, { recursive: true });
   }
 
-  const path = `${baseAssetDir}/${user}/${filename}`;
+  const path = `${baseLocalDir}/${user}/${filename}`;
 
   const writableStream = createWriteStream(path, { autoClose: true });
   console.log(path);
@@ -89,4 +89,8 @@ export const handleUploadLocal = async (file: Upload, user: string) => {
         throw Error("Upload failed: ");
       });
   });
+};
+
+export const handleDeleteLocal = async (path: string) => {
+  unlinkSync(`${baseLocalDir}/${path.slice(8)}`);
 };
