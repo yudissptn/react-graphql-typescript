@@ -20,6 +20,17 @@ import { Updoot } from "./entities/Updoot";
 import { createUserLoader } from "./utils/createUserLoader";
 import { createUpdootLoader } from "./utils/createUpdootLoader";
 import { graphqlUploadExpress } from "graphql-upload";
+import { Admin } from "./entities/Admin";
+import { AdminResolver } from "./resolvers/admin";
+import { Customer } from "./entities/Customer";
+import { CustomerProfile } from "./entities/CustomerProfile";
+import { CustumerResolver } from "./resolvers/customer";
+import { Order } from "./entities/Order";
+import { ServiceTypes } from "./entities/ServiceTypes";
+import { Locker } from "./entities/Locker";
+import { LockerResolver } from "./resolvers/locker";
+import { ServiceResolver } from "./resolvers/service";
+import { OrderResolver } from "./resolvers/order";
 
 const main = async () => {
   //@ts-ignore
@@ -27,14 +38,25 @@ const main = async () => {
     type: "postgres",
     url: process.env.DATABASE_URL,
     logging: true,
-    // synchronize: true,
-    entities: [Post, User, Updoot],
+    synchronize: true,
+    entities: [
+      Post,
+      User,
+      Updoot,
+      Admin,
+      Customer,
+      CustomerProfile,
+      Order,
+      ServiceTypes,
+      Locker,
+    ],
     migrations: [path.join(__dirname, "./migrations/*")],
   });
 
-  await conn.runMigrations();
+  // await conn.runMigrations();
 
-  // await User.delete({});
+  // await Admin.delete({});
+  // await AdminRole.delete({});
 
   const app = express();
 
@@ -69,7 +91,17 @@ const main = async () => {
 
   const apolloServer = new ApolloServer({
     schema: await buildSchema({
-      resolvers: [HelloResolver, PostResolver, UserResolver, PictureResolver],
+      resolvers: [
+        HelloResolver,
+        PostResolver,
+        UserResolver,
+        PictureResolver,
+        AdminResolver,
+        CustumerResolver,
+        LockerResolver,
+        ServiceResolver,
+        OrderResolver,
+      ],
       validate: false,
     }),
     context: ({ req, res }) => ({
