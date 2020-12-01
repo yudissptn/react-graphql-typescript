@@ -1,0 +1,16 @@
+query Customer {
+  identifyCustomer {
+    errors {
+      field
+      message
+    }
+    customer {
+      id
+      username
+      custId
+    }
+    profile {
+      balance
+    }
+  }
+}

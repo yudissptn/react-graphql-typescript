@@ -1,4 +1,12 @@
-import { ObjectType, Field, Mutation, Arg, Resolver } from "type-graphql";
+import {
+  ObjectType,
+  Field,
+  Mutation,
+  Arg,
+  Resolver,
+  Query,
+  Int,
+} from "type-graphql";
 import { ServiceTypes } from "../entities/ServiceTypes";
 import { ServiceRegisterInput } from "./types/ServiceRegisterInput";
 
@@ -29,6 +37,13 @@ export class ServiceResolver {
       duration: options.duration,
       price: options.price,
     }).save();
+
+    return { service };
+  }
+
+  @Query(() => ServiceResponse, { nullable: true })
+  async identifyService(@Arg("serviceId", () => Int) serviceId: number) {
+    const service = await ServiceTypes.findOne({ where: { serviceId } });
 
     return { service };
   }

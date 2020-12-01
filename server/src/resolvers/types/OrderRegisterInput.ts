@@ -21,12 +21,12 @@ export enum OrderStatus {
 export class OrderRegisterInput {
   @Field()
   custId: string;
-  @Field((type) => ServiceType)
+  @Field((_type) => ServiceType)
   serviceId: ServiceType;
-  @Field((type) => Int)
+  @Field((_type) => Int)
   lockerId: number;
   @Field()
   pictUrl: string;
-  @Field((type) => Int)
+  @Field((_type) => Int)
   amount: number;
 }

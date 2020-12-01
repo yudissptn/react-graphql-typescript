@@ -1,0 +1,13 @@
+mutation LoginCustomer($usernameOrEmail: String!, $password: String!) {
+  loginCustomer(usernameOrEmail: $usernameOrEmail, password: $password) {
+    errors {
+      field
+      message
+    }
+    customer {
+      id
+      username
+      custId
+    }
+  }
+}

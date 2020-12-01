@@ -1,4 +1,4 @@
-import { InputType, Field } from "type-graphql";
+import { InputType, Field, Int } from "type-graphql";
 @InputType()
 export class CustomerRegisterInput {
   @Field()
@@ -23,4 +23,12 @@ export class CustomerRegisterInput {
   occupation: string;
   @Field()
   address: string;
+}
+
+@InputType()
+export class CustomerDeleteInput {
+  @Field(() => Int)
+  id: number;
+  @Field()
+  custId: string;
 }

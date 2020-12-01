@@ -13,6 +13,7 @@ import { MyContext } from "../types";
 import { validateRegister } from "../utils/validateRegister";
 import { getConnection } from "typeorm";
 import argon2 from "argon2";
+import { CustomerProfile } from "../entities/CustomerProfile";
 
 @ObjectType()
 class AdminError {
@@ -123,5 +124,20 @@ export class AdminResolver {
     }
 
     return Admin.findOne({ where: { id: req.session!.adminId } });
+  }
+
+  @Mutation(() => CustomerProfile, { nullable: true })
+  async updateCustomerBalance(
+    @Arg("custId") custId: string,
+    @Arg("nominal") nominal: number
+  ) {
+    await getConnection()
+      .createQueryBuilder()
+      .update(CustomerProfile)
+      .set({ balance: nominal })
+      .where(`"custId" = :id`, { id: custId })
+      .execute();
+
+    return await CustomerProfile.findOne({ where: { custId } });
   }
 }

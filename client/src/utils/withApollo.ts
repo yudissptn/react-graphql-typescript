@@ -1,6 +1,7 @@
 import { createWithApollo } from "./createWithApollo";
 import { ApolloClient, InMemoryCache } from "@apollo/client";
-import { PaginatedPosts } from "../generated/graphql";
+import { CustomerOrderResponse } from "../generated/graphql";
+import { Order } from "../generated/graphql";
 import { NextPageContext } from "next";
 import { createUploadLink } from "apollo-upload-client";
 
@@ -27,15 +28,18 @@ const createClient = (ctx: NextPageContext) =>
       typePolicies: {
         Query: {
           fields: {
-            posts: {
+            order: {
               keyArgs: [],
               merge(
-                existing: PaginatedPosts | undefined,
-                incoming: PaginatedPosts
-              ): PaginatedPosts {
+                existing: CustomerOrderResponse | undefined,
+                incoming: CustomerOrderResponse
+              ): CustomerOrderResponse {
                 return {
                   ...incoming,
-                  posts: [...(existing?.posts || []), ...incoming.posts],
+                  ogOrder: [
+                    ...(incoming.ogOrder || []),
+                    ...(existing?.ogOrder || []),
+                  ],
                 };
               },
             },

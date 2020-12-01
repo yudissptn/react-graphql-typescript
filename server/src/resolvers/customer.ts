@@ -6,6 +6,7 @@ import {
   ObjectType,
   Field,
   Query,
+  Int,
 } from "type-graphql";
 import { CustomerRegisterInput } from "./types/CustomerRegisterInput";
 import { MyContext } from "../types";
@@ -81,7 +82,7 @@ export class CustumerResolver {
       }
     }
 
-    req.session!.customerId = customer.id;
+    req.session!.custId = customer.custId;
 
     const profileQuery = await getConnection()
       .createQueryBuilder()
@@ -147,15 +148,48 @@ export class CustumerResolver {
     // Store user id session, keep logged in
     req.session!.custId = customer.custId;
 
+    console.log("cust id login: ", req.session!.custId);
+
     return { customer };
   }
 
-  @Query(() => Customer, { nullable: true })
+  @Query(() => CustomerResponse, { nullable: true })
   async identifyCustomer(@Ctx() { req }: MyContext) {
     if (!req.session!.custId) {
       return null;
     }
 
-    return Customer.findOne({ where: { custId: req.session!.custId } });
+    const customer = await Customer.findOne({
+      where: { custId: req.session!.custId },
+    });
+
+    const profile = await CustomerProfile.findOne({
+      where: { custId: req.session!.custId },
+    });
+
+    return { customer, profile };
+  }
+
+  @Mutation(() => Boolean)
+  async deleteCustomer(@Arg("custId") custId: string) {
+    const customer = await Customer.findOne({ where: { custId } });
+    if (!customer) {
+      return false;
+    }
+
+    const profile = await CustomerProfile.findOne({ where: { custId } });
+    if (!profile) {
+      return false;
+    }
+
+    await Customer.delete({
+      custId,
+    });
+
+    await CustomerProfile.delete({
+      custId,
+    });
+
+    return true;
   }
 }

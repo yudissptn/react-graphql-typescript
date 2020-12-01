@@ -1,0 +1,30 @@
+query CustomerOrder($custId: String!) {
+  customerOrder(custId: $custId) {
+    errors {
+      field
+      message
+    }
+    ogOrder {
+      orderId
+      serviceId
+      lockerId
+      createdAt
+      endOrder
+      status
+      pictUrl
+      amount
+      totalPrice
+    }
+    histOrder {
+      orderId
+      serviceId
+      lockerId
+      createdAt
+      endOrder
+      status
+      pictUrl
+      amount
+      totalPrice
+    }
+  }
+}

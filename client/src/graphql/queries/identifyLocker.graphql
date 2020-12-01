@@ -1,0 +1,15 @@
+query IdentifyLocker($lockerId: Int!) {
+  identifyLocker(lockerId: $lockerId) {
+    errors {
+      field
+      message
+    }
+    locker {
+      id
+      lockerId
+      address
+      lockStatus
+      fillStatus
+    }
+  }
+}

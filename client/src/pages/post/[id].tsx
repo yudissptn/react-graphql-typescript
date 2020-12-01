@@ -1,6 +1,6 @@
 import React from "react";
 import { Layout } from "../../components/Layout";
-import { Heading, Box } from "@chakra-ui/core";
+import { Heading, Box } from "@chakra-ui/react";
 import { useGetPostFromUrl } from "../../utils/useGetPostFromUrl";
 import { EditDeletePostButton } from "../../components/EditDeletePostButton";
 import { withApollo } from "../../utils/withApollo";

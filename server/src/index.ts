@@ -31,6 +31,7 @@ import { Locker } from "./entities/Locker";
 import { LockerResolver } from "./resolvers/locker";
 import { ServiceResolver } from "./resolvers/service";
 import { OrderResolver } from "./resolvers/order";
+import { createCustLoader } from "./utils/createCustLoader";
 
 const main = async () => {
   //@ts-ignore
@@ -110,6 +111,7 @@ const main = async () => {
       redis,
       userLoader: createUserLoader(),
       updootLoader: createUpdootLoader(),
+      custLoader: createCustLoader(),
     }),
     uploads: false,
   });

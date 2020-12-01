@@ -1,19 +1,8 @@
-import { Resolver, Mutation, Arg, ObjectType, Field } from "type-graphql";
+import { Resolver, Mutation, Arg } from "type-graphql";
 import { GraphQLUpload, FileUpload } from "graphql-upload";
 import { handleFileUploadS3, handleUploadLocal } from "../utils/fileHandler";
 import { __prod__ } from "../constants";
-
-@ObjectType()
-class S3Object {
-  @Field()
-  ETag: String;
-  @Field()
-  Location: String;
-  @Field()
-  Key: String;
-  @Field()
-  Bucket: String;
-}
+import { S3Object } from "./types/S3Object";
 
 @Resolver()
 export class PictureResolver {

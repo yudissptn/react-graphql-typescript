@@ -1,0 +1,20 @@
+mutation registerOrder($options: OrderRegisterInput!) {
+  registerOrder(options: $options) {
+    errors {
+      field
+      message
+    }
+    orderRes {
+      orderId
+      custId
+      serviceId
+      adminId
+      lockerId
+      endOrder
+      status
+      pictUrl
+      amount
+      totalPrice
+    }
+  }
+}

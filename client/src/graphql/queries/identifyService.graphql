@@ -1,0 +1,13 @@
+query identifyService($serviceId: Int!) {
+  identifyService(serviceId: $serviceId) {
+    errors {
+      field
+      message
+    }
+    service {
+      type
+      duration
+      price
+    }
+  }
+}

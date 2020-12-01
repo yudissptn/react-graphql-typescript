@@ -1,0 +1,25 @@
+mutation RegisterCustomer($options: CustomerRegisterInput!) {
+  registerCustomer(options: $options) {
+    errors {
+      field
+      message
+    }
+    customer {
+      id
+      custId
+      username
+    }
+    profile {
+      custId
+      firstName
+      lastName
+      email
+      dob
+      phone
+      gender
+      age
+      occupation
+      address
+    }
+  }
+}

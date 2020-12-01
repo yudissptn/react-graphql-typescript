@@ -2,7 +2,7 @@ import React from "react";
 import { Layout } from "../../../components/Layout";
 import { Formik, Form } from "formik";
 import { InputField } from "../../../components/InputField";
-import { Box, Button } from "@chakra-ui/core";
+import { Box, Button } from "@chakra-ui/react";
 import {
   useUpdatePostMutation,
   usePostQuery,

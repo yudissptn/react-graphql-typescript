@@ -65,7 +65,7 @@ export const handleUploadLocal = async (file: Upload, user: string) => {
   const { createReadStream, filename } = await file;
 
   if (!existsSync(`${baseLocalDir}/${user}/`)) {
-    console.log("not exists");
+    console.log(`not exists...creating folder${user}`);
     mkdirSync(`${baseLocalDir}/${user}/`, { recursive: true });
   }
 

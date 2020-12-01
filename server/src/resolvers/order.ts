@@ -1,5 +1,12 @@
-import { ObjectType, Field, Mutation, Arg, Resolver } from "type-graphql";
-import { OrderRegisterInput } from "./types/OrderRegisterInput";
+import {
+  ObjectType,
+  Field,
+  Mutation,
+  Arg,
+  Resolver,
+  Query,
+} from "type-graphql";
+import { OrderRegisterInput, OrderStatus } from "./types/OrderRegisterInput";
 import { Order } from "../entities/Order";
 import { ServiceTypes } from "../entities/ServiceTypes";
 import { v4 } from "uuid";
@@ -20,6 +27,18 @@ class OrderResponse {
 
   @Field(() => Order, { nullable: true })
   orderRes?: Order;
+}
+
+@ObjectType()
+class CustomerOrderResponse {
+  @Field(() => [OrderError], { nullable: true })
+  errors?: OrderError[];
+
+  @Field(() => [Order], { nullable: true })
+  ogOrder?: Order[];
+
+  @Field(() => [Order], { nullable: true })
+  histOrder?: Order[];
 }
 
 @Resolver(Order)
@@ -51,7 +70,7 @@ export class OrderResolver {
       return {
         errors: [
           {
-            field: "CustomerProfile",
+            field: "custId",
             message: "can't find customer",
           },
         ],
@@ -89,5 +108,23 @@ export class OrderResolver {
     }).save();
 
     return { orderRes };
+  }
+
+  @Query(() => CustomerOrderResponse)
+  async customerOrder(@Arg("custId") custId: string) {
+    console.log(custId);
+    const order = await Order.find({
+      where: { custId },
+      order: { createdAt: "DESC" },
+    });
+    console.log(order);
+    const ogOrder = order.filter(
+      (data) => data.status !== OrderStatus.DELIVERED
+    );
+    const histOrder = order.filter(
+      (data) => data.status === OrderStatus.DELIVERED
+    );
+
+    return { ogOrder, histOrder };
   }
 }

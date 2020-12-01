@@ -1,11 +1,12 @@
 import React, { useCallback, useState } from "react";
 import { Formik, Form } from "formik";
 import { InputField } from "../components/InputField";
-import { Box, Button } from "@chakra-ui/core";
+import { Box, Button } from "@chakra-ui/react";
 import {
   useCreatePostMutation,
   useAddProfilePictureMutation,
   useMeQuery,
+  useCustomerQuery,
 } from "../generated/graphql";
 import { useRouter } from "next/router";
 import { Layout } from "../components/Layout";
@@ -14,17 +15,20 @@ import { useDropzone } from "react-dropzone";
 import { withApollo } from "../utils/withApollo";
 import { isServer } from "../utils/isServer";
 
-interface createPostProps {}
+interface createOrderProps {}
 
-const createPost: React.FC<createPostProps> = ({}) => {
+const createOrder: React.FC<createOrderProps> = ({}) => {
   const [preview, setPreview] = useState("");
+  const [uploadedPict, setPicture] = useState(null);
   const [errors, setErrors] = useState("");
   const router = useRouter();
   useIsAuth();
   const [createPost] = useCreatePostMutation();
   const [addProfilePicture] = useAddProfilePictureMutation();
-  const [uploadedPict, setPicture] = useState(null);
   const { data } = useMeQuery({
+    skip: isServer(),
+  });
+  const { data: custData } = useCustomerQuery({
     skip: isServer(),
   });
 
@@ -73,6 +77,7 @@ const createPost: React.FC<createPostProps> = ({}) => {
             router.push("/");
           }
         }}
+        validateOnChange
       >
         {({ isSubmitting }) => (
           <Form>
@@ -114,4 +119,4 @@ const createPost: React.FC<createPostProps> = ({}) => {
   );
 };
 
-export default withApollo({ ssr: true })(createPost);
+export default withApollo({ ssr: true })(createOrder);
