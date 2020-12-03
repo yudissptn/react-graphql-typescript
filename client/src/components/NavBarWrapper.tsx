@@ -1,23 +1,36 @@
 import React from "react";
-import { Flex } from "@chakra-ui/react";
+import { Flex, useColorMode } from "@chakra-ui/react";
 
-interface NavBarWrapper {}
+interface NavBarWrapper {
+  fullW?: boolean;
+  disableSticky?: boolean;
+  justify?: string;
+  grow?: number;
+}
 
-export const NavBarWrapper: React.FC<NavBarWrapper> = ({ children }) => {
+export const NavBarWrapper: React.FC<NavBarWrapper> = ({
+  children,
+  fullW,
+  disableSticky,
+  justify,
+  grow,
+}) => {
+  const { colorMode } = useColorMode();
   return (
     <Flex
       zIndex={1}
       as={"nav"}
-      align="center"
-      justify="space-between"
+      align={"center"}
       wrap="wrap"
       padding={"1.5rem"}
-      position="sticky"
+      position={!disableSticky ? "sticky" : "static"}
       top={0}
-      bg="blue.50"
-      minHeight={120}
+      bg={colorMode === "light" ? "blue.50" : "gray.800"}
+      h={120}
+      justify={"center"}
+      grow={grow}
     >
-      <Flex maxW={1200} justify="space-between" mx={"auto"} w={"100%"}>
+      <Flex maxW={!fullW ? 1200 : undefined} justify="space-between" w={"100%"}>
         {children}
       </Flex>
     </Flex>

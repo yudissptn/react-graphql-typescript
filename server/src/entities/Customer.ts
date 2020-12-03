@@ -5,7 +5,9 @@ import {
   Entity,
   PrimaryColumn,
   PrimaryGeneratedColumn,
+  OneToMany,
 } from "typeorm";
+import { Order } from "./Order";
 
 @ObjectType()
 @Entity()
@@ -24,4 +26,7 @@ export class Customer extends BaseEntity {
 
   @Column()
   password!: string;
+
+  @OneToMany(() => Order, (order) => order.customer)
+  order: Order[];
 }

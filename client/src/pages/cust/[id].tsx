@@ -7,6 +7,7 @@ import {
   Link,
   Text,
   Tooltip,
+  Icon,
 } from "@chakra-ui/react";
 import NextLink from "next/link";
 import React, { useState } from "react";
@@ -19,15 +20,14 @@ import { useGetIntId } from "../../utils/useGetIntId";
 import { withApollo } from "../../utils/withApollo";
 import useIsAuth from "../../utils/useIsAuth";
 import { format } from "date-fns";
+import { StatusColor } from "../../utils/commonInterface";
+import { MdAccountBalanceWallet } from "react-icons/md";
 
 export const CustomerPage = ({}) => {
   const [iconColor, setIconColor] = useState("whitesmoke");
   const { data, loading } = useIsAuth();
   const intId = useGetIntId();
   const { data: orderData, loading: orderLoading } = useCustomerOrderQuery({
-    variables: {
-      custId: String(intId),
-    },
     notifyOnNetworkStatusChange: true,
   });
 
@@ -51,6 +51,13 @@ export const CustomerPage = ({}) => {
               <Text ml={{ base: 0, md: 8 }}>{`Balance: ${addCurrency(
                 data?.identifyCustomer?.profile?.balance!
               )}`}</Text>
+              <Icon
+                as={MdAccountBalanceWallet}
+                w={{ base: 4, md: 6 }}
+                h={{ base: 4, md: 6 }}
+                ml={{ base: 0, md: 2 }}
+                // onClick={() => setSection("topup")}
+              ></Icon>
             </Flex>
             <Logout />{" "}
           </>
@@ -91,7 +98,7 @@ export const CustomerPage = ({}) => {
                 </Button>
               </Tooltip>
             </Flex>
-            {ogLength && ogLength.length > 0 ? (
+            {ogLength && ogLength.length > 0 && !orderLoading ? (
               orderData?.customerOrder.ogOrder?.map((o) => (
                 <Box
                   w={{ base: 380, md: 1200 }}
@@ -108,7 +115,13 @@ export const CustomerPage = ({}) => {
                     p={3}
                   >
                     <Text>{`Order ID: ${o.orderId}`}</Text>
-                    <Text color="green.300">{o.status}</Text>
+                    <Text
+                      color={`${
+                        StatusColor[o.status as keyof typeof StatusColor]
+                      }.500`}
+                    >
+                      {o.status}
+                    </Text>
                   </Flex>
                   <Flex p={3} justify="space-between" bg="gray.100">
                     <Text>{o.serviceId}</Text>

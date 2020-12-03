@@ -17,6 +17,10 @@ export enum OrderStatus {
   DELIVERED = "DELIVERED",
 }
 
+registerEnumType(OrderStatus, {
+  name: "OrderStatus",
+});
+
 @InputType()
 export class OrderRegisterInput {
   @Field()
@@ -29,4 +33,12 @@ export class OrderRegisterInput {
   pictUrl: string;
   @Field((_type) => Int)
   amount: number;
+}
+
+@InputType()
+export class SetOrderStatusInput {
+  @Field()
+  orderId: string;
+  @Field((_type) => OrderStatus)
+  status: OrderStatus;
 }

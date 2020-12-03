@@ -1,12 +1,16 @@
-import { CSSReset, ThemeProvider, theme } from "@chakra-ui/react";
-// import theme from "../theme";
+import { extendTheme, ChakraProvider } from "@chakra-ui/react";
+
+const customTheme = extendTheme({
+  config: {
+    initialColorMode: "dark",
+  },
+});
 
 function MyApp({ Component, pageProps }: any) {
   return (
-    <ThemeProvider theme={theme}>
-      <CSSReset />
+    <ChakraProvider theme={customTheme}>
       <Component {...pageProps} />
-    </ThemeProvider>
+    </ChakraProvider>
   );
 }
 

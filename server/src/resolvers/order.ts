@@ -5,12 +5,21 @@ import {
   Arg,
   Resolver,
   Query,
+  Ctx,
 } from "type-graphql";
-import { OrderRegisterInput, OrderStatus } from "./types/OrderRegisterInput";
+import {
+  OrderRegisterInput,
+  OrderStatus,
+  SetOrderStatusInput,
+} from "./types/OrderRegisterInput";
 import { Order } from "../entities/Order";
 import { ServiceTypes } from "../entities/ServiceTypes";
 import { v4 } from "uuid";
 import { CustomerProfile } from "../entities/CustomerProfile";
+import { MyContext } from "../types";
+import { Customer } from "../entities/Customer";
+import { getConnection } from "typeorm";
+import { Admin } from "../entities/Admin";
 
 @ObjectType()
 class OrderError {
@@ -77,9 +86,13 @@ export class OrderResolver {
       };
     }
 
-    const checkBalance = customer?.balance >= totalPrice;
+    const custAcc = await Customer.findOne({
+      where: { custId: options.custId },
+    });
 
-    if (!checkBalance) {
+    const checkBalance = customer?.balance - totalPrice;
+
+    if (checkBalance < 0) {
       return {
         errors: [
           {
@@ -89,6 +102,13 @@ export class OrderResolver {
         ],
       };
     }
+
+    await getConnection()
+      .createQueryBuilder()
+      .update(CustomerProfile)
+      .set({ balance: checkBalance })
+      .where(`"custId" = :id`, { id: options.custId })
+      .execute();
 
     const token = v4();
 
@@ -105,14 +125,29 @@ export class OrderResolver {
       pictUrl: options.pictUrl,
       amount: options.amount,
       totalPrice,
+      customer: custAcc,
     }).save();
+
+    console.log(orderRes);
 
     return { orderRes };
   }
 
   @Query(() => CustomerOrderResponse)
-  async customerOrder(@Arg("custId") custId: string) {
-    console.log(custId);
+  async customerOrder(@Ctx() { req }: MyContext) {
+    const custId = req.session.custId;
+
+    if (!req.session.custId) {
+      return {
+        errors: [
+          {
+            field: "unauthorized",
+            message: "unauthorized",
+          },
+        ],
+      };
+    }
+
     const order = await Order.find({
       where: { custId },
       order: { createdAt: "DESC" },
@@ -126,5 +161,43 @@ export class OrderResolver {
     );
 
     return { ogOrder, histOrder };
+  }
+
+  @Query(() => [Order], { nullable: true })
+  async activeOrder(@Ctx() { req }: MyContext) {
+    if (!req.session.adminId) {
+      return null;
+    }
+
+    const order = await Order.find({
+      relations: ["customer"],
+      order: { createdAt: "DESC" },
+    });
+
+    return order.filter((i) => i.status !== "DELIVERED");
+  }
+
+  @Mutation(() => Order, { nullable: true })
+  async setOrderStatus(
+    @Arg("options") options: SetOrderStatusInput,
+    @Ctx() { req }: MyContext
+  ) {
+    if (!req.session.adminId) {
+      return null;
+    }
+
+    const admin = await Admin.findOne({ where: { id: req.session.adminId } });
+
+    await getConnection()
+      .createQueryBuilder()
+      .update(Order)
+      .set({ status: options.status, adminId: admin?.username || "xx" })
+      .where(`"orderId" = :id`, { id: options.orderId })
+      .execute();
+
+    return await Order.findOne({
+      where: { orderId: options.orderId },
+      relations: ["customer"],
+    });
   }
 }

@@ -1,0 +1,9 @@
+query IdentifyAdmin {
+  identifyAdmin {
+    id
+    username
+    email
+    createdAt
+    roleId
+  }
+}

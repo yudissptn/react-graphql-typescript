@@ -1,10 +1,11 @@
-query CustomerOrder($custId: String!) {
-  customerOrder(custId: $custId) {
+query CustomerOrder {
+  customerOrder {
     errors {
       field
       message
     }
     ogOrder {
+      id
       orderId
       serviceId
       lockerId
@@ -16,6 +17,7 @@ query CustomerOrder($custId: String!) {
       totalPrice
     }
     histOrder {
+      id
       orderId
       serviceId
       lockerId

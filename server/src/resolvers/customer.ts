@@ -6,7 +6,6 @@ import {
   ObjectType,
   Field,
   Query,
-  Int,
 } from "type-graphql";
 import { CustomerRegisterInput } from "./types/CustomerRegisterInput";
 import { MyContext } from "../types";
@@ -99,6 +98,7 @@ export class CustumerResolver {
         gender: options.gender,
         phone: options.phone,
         custId: token.slice(-12),
+        balance: 1000000,
       })
       .returning("*")
       .execute();
@@ -147,8 +147,6 @@ export class CustumerResolver {
 
     // Store user id session, keep logged in
     req.session!.custId = customer.custId;
-
-    console.log("cust id login: ", req.session!.custId);
 
     return { customer };
   }

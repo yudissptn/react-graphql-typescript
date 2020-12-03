@@ -32,6 +32,8 @@ import { LockerResolver } from "./resolvers/locker";
 import { ServiceResolver } from "./resolvers/service";
 import { OrderResolver } from "./resolvers/order";
 import { createCustLoader } from "./utils/createCustLoader";
+import { TopupBalance } from "./entities/TopupBalance";
+import { TopupBalanceResolver } from "./resolvers/topup";
 
 const main = async () => {
   //@ts-ignore
@@ -50,6 +52,7 @@ const main = async () => {
       Order,
       ServiceTypes,
       Locker,
+      TopupBalance,
     ],
     migrations: [path.join(__dirname, "./migrations/*")],
   });
@@ -78,7 +81,7 @@ const main = async () => {
         disableTouch: true,
       }),
       cookie: {
-        maxAge: 1000 * 60 * 60 * 3, // 3 hours
+        maxAge: 1000 * 60 * 60 * 24, // 24 hours
         httpOnly: true,
         sameSite: "lax", //csrf
         secure: __prod__, //only works in https
@@ -102,6 +105,7 @@ const main = async () => {
         LockerResolver,
         ServiceResolver,
         OrderResolver,
+        TopupBalanceResolver,
       ],
       validate: false,
     }),

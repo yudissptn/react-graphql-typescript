@@ -5,7 +5,6 @@ import {
   CreateDateColumn,
   Entity,
   PrimaryGeneratedColumn,
-  PrimaryColumn,
 } from "typeorm";
 import { RoleTypeId } from "../resolvers/types/AdminRegisterInput";
 
@@ -32,6 +31,6 @@ export class Admin extends BaseEntity {
   createdAt: Date;
 
   @Field()
-  @PrimaryColumn({ type: "enum", enum: RoleTypeId, default: RoleTypeId.FLEET })
+  @Column({ type: "enum", enum: RoleTypeId, default: RoleTypeId.FLEET })
   roleId!: RoleTypeId;
 }

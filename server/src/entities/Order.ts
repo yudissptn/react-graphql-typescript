@@ -7,9 +7,11 @@ import {
   PrimaryGeneratedColumn,
   CreateDateColumn,
   UpdateDateColumn,
+  ManyToOne,
 } from "typeorm";
 import { ServiceType } from "../resolvers/types/ServiceRegisterInput";
 import { OrderStatus } from "../resolvers/types/OrderRegisterInput";
+import { Customer } from "./Customer";
 
 @ObjectType()
 @Entity()
@@ -32,7 +34,7 @@ export class Order extends BaseEntity {
 
   @Field({ nullable: true })
   @Column({ nullable: true })
-  adminId?: number;
+  adminId?: string;
 
   @Field()
   @Column({ type: "int" })
@@ -65,4 +67,8 @@ export class Order extends BaseEntity {
   @Field()
   @Column({ type: "int" })
   totalPrice!: number;
+
+  @Field(() => Customer, { nullable: true })
+  @ManyToOne(() => Customer, (cust) => cust.order)
+  customer: Customer;
 }

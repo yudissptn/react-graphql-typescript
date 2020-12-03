@@ -7,7 +7,9 @@ import {
   PrimaryGeneratedColumn,
   CreateDateColumn,
   UpdateDateColumn,
+  OneToMany,
 } from "typeorm";
+import { TopupBalance } from "./TopupBalance";
 
 @ObjectType()
 @Entity()
@@ -67,4 +69,7 @@ export class CustomerProfile extends BaseEntity {
   @Field()
   @UpdateDateColumn()
   updatedAt!: Date;
+
+  @OneToMany(() => TopupBalance, (topup) => topup.customer)
+  topup: TopupBalance[];
 }

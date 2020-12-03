@@ -23,7 +23,6 @@ import {
   Button,
   FormControl,
   FormLabel,
-  VisuallyHidden,
   FormErrorMessage,
   Alert,
   AlertIcon,
@@ -36,7 +35,6 @@ import { withApollo } from "../utils/withApollo";
 import { NavBarWrapper } from "../components/NavBarWrapper";
 import { Logout } from "../components/Logout";
 import { useDropzone } from "react-dropzone";
-import useIsAuth from "../utils/useIsAuth";
 import RadioCard from "./RadioCard";
 import { format } from "date-fns";
 import { addCurrency } from "../utils/communUtils";
@@ -48,10 +46,12 @@ import {
   useAddProfilePictureMutation,
   useRegisterOrderMutation,
   ServiceType,
+  CustomerOrderQuery,
+  CustomerOrderDocument,
+  CustomerQuery,
+  CustomerDocument,
 } from "../generated/graphql";
 import { useRouter } from "next/router";
-import { isServer } from "../utils/isServer";
-import { ApolloCache } from "@apollo/client";
 import gql from "graphql-tag";
 import { toErrorMap } from "../utils/toErrorMap";
 
@@ -89,7 +89,6 @@ const createOrder: React.FC<createOrderProps> = ({}) => {
   });
   const [addProfilePicture] = useAddProfilePictureMutation();
   const [registerOrder] = useRegisterOrderMutation();
-  // const [data: lockerData] = useIdentifyLockerQuery()
 
   const custCredentials = client.readFragment<{
     id: number;
@@ -201,8 +200,42 @@ const createOrder: React.FC<createOrderProps> = ({}) => {
                 amount: Math.round(values.amount),
               },
             },
-            update: (cache) => {
-              cache.evict({ fieldName: "order:{}" });
+            update: (cache, { data }) => {
+              const existingOnGoingOrder = cache.readQuery<CustomerOrderQuery>({
+                query: CustomerOrderDocument,
+              });
+              cache.writeQuery<CustomerOrderQuery>({
+                query: CustomerOrderDocument,
+                data: {
+                  __typename: "Query",
+                  customerOrder: {
+                    ...existingOnGoingOrder?.customerOrder,
+                    ogOrder: [
+                      data?.registerOrder.orderRes!,
+                      ...existingOnGoingOrder?.customerOrder.ogOrder!,
+                    ],
+                  },
+                },
+              });
+              cache.evict({ fieldName: "customerOrder:{}" });
+              const existingCustomerBalance = cache.readQuery<CustomerQuery>({
+                query: CustomerDocument,
+              });
+              cache.writeQuery<CustomerQuery>({
+                query: CustomerDocument,
+                data: {
+                  __typename: "Query",
+                  identifyCustomer: {
+                    ...existingCustomerBalance?.identifyCustomer,
+                    profile: {
+                      balance:
+                        existingCustomerBalance?.identifyCustomer?.profile
+                          ?.balance! -
+                        data?.registerOrder.orderRes?.totalPrice!,
+                    },
+                  },
+                },
+              });
             },
           });
 

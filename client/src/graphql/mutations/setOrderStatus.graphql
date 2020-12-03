@@ -1,0 +1,22 @@
+mutation SetOrderStatus($options: SetOrderStatusInput!) {
+  setOrderStatus(options: $options) {
+    id
+    orderId
+    custId
+    serviceId
+    adminId
+    lockerId
+    createdAt
+    updatedAt
+    endOrder
+    status
+    pictUrl
+    amount
+    totalPrice
+    customer {
+      id
+      custId
+      username
+    }
+  }
+}

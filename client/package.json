@@ -29,6 +29,7 @@
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "react-dropzone": "^11.2.4",
+    "react-icons": "^4.1.0",
     "react-is": "^17.0.1",
     "urql": "^1.10.1"
   },

@@ -5,16 +5,18 @@ mutation registerOrder($options: OrderRegisterInput!) {
       message
     }
     orderRes {
+      id
       orderId
-      custId
       serviceId
-      adminId
       lockerId
+      createdAt
       endOrder
       status
       pictUrl
+      custId
       amount
       totalPrice
+      adminId
     }
   }
 }

@@ -28,7 +28,7 @@ const createClient = (ctx: NextPageContext) =>
       typePolicies: {
         Query: {
           fields: {
-            order: {
+            customerOrder: {
               keyArgs: [],
               merge(
                 existing: CustomerOrderResponse | undefined,

@@ -26,6 +26,7 @@ export type Query = {
   identifyLocker?: Maybe<LockerResponse>;
   identifyService?: Maybe<ServiceResponse>;
   customerOrder: CustomerOrderResponse;
+  activeOrder?: Maybe<Array<Order>>;
 };
 
 
@@ -47,11 +48,6 @@ export type QueryIdentifyLockerArgs = {
 
 export type QueryIdentifyServiceArgs = {
   serviceId: Scalars['Int'];
-};
-
-
-export type QueryCustomerOrderArgs = {
-  custId: Scalars['String'];
 };
 
 export type PaginatedPosts = {
@@ -206,6 +202,7 @@ export type Order = {
   pictUrl: Scalars['String'];
   amount: Scalars['Float'];
   totalPrice: Scalars['Float'];
+  customer?: Maybe<Customer>;
 };
 
 export type Mutation = {
@@ -225,9 +222,11 @@ export type Mutation = {
   updateCustomerBalance?: Maybe<CustomerProfile>;
   registerCustomer: CustomerResponse;
   loginCustomer: CustomerResponse;
+  deleteCustomer: Scalars['Boolean'];
   registerLocker: LockerResponse;
   registerService: ServiceResponse;
   registerOrder: OrderResponse;
+  setOrderStatus?: Maybe<Order>;
 };
 
 
@@ -311,6 +310,11 @@ export type MutationLoginCustomerArgs = {
 };
 
 
+export type MutationDeleteCustomerArgs = {
+  custId: Scalars['String'];
+};
+
+
 export type MutationRegisterLockerArgs = {
   options: LockerRegisterInput;
 };
@@ -323,6 +327,11 @@ export type MutationRegisterServiceArgs = {
 
 export type MutationRegisterOrderArgs = {
   options: OrderRegisterInput;
+};
+
+
+export type MutationSetOrderStatusArgs = {
+  options: SetOrderStatusInput;
 };
 
 export type PostInput = {
@@ -431,6 +440,18 @@ export type OrderRegisterInput = {
   amount: Scalars['Int'];
 };
 
+export type SetOrderStatusInput = {
+  orderId: Scalars['String'];
+  status: OrderStatus;
+};
+
+export enum OrderStatus {
+  Submitted = 'SUBMITTED',
+  Confirmed = 'CONFIRMED',
+  Process = 'PROCESS',
+  Delivered = 'DELIVERED'
+}
+
 export type PostSnippetFragment = (
   { __typename?: 'Post' }
   & Pick<Post, 'id' | 'createdAt' | 'updatedAt' | 'title' | 'pictUrl' | 'textSnippet' | 'points' | 'voteStatus'>
@@ -537,6 +558,26 @@ export type LoginMutation = (
   ) }
 );
 
+export type LoginAdminMutationVariables = Exact<{
+  usernameOrEmail: Scalars['String'];
+  password: Scalars['String'];
+}>;
+
+
+export type LoginAdminMutation = (
+  { __typename?: 'Mutation' }
+  & { loginAdmin: (
+    { __typename?: 'AdminResponse' }
+    & { errors?: Maybe<Array<(
+      { __typename?: 'AdminError' }
+      & Pick<AdminError, 'field' | 'message'>
+    )>>, admin?: Maybe<(
+      { __typename?: 'Admin' }
+      & Pick<Admin, 'id' | 'username' | 'email' | 'createdAt' | 'roleId'>
+    )> }
+  ) }
+);
+
 export type LoginCustomerMutationVariables = Exact<{
   usernameOrEmail: Scalars['String'];
   password: Scalars['String'];
@@ -614,9 +655,26 @@ export type RegisterOrderMutation = (
       & Pick<OrderError, 'field' | 'message'>
     )>>, orderRes?: Maybe<(
       { __typename?: 'Order' }
-      & Pick<Order, 'orderId' | 'custId' | 'serviceId' | 'adminId' | 'lockerId' | 'endOrder' | 'status' | 'pictUrl' | 'amount' | 'totalPrice'>
+      & Pick<Order, 'id' | 'orderId' | 'serviceId' | 'lockerId' | 'createdAt' | 'endOrder' | 'status' | 'pictUrl' | 'custId' | 'amount' | 'totalPrice' | 'adminId'>
     )> }
   ) }
+);
+
+export type SetOrderStatusMutationVariables = Exact<{
+  options: SetOrderStatusInput;
+}>;
+
+
+export type SetOrderStatusMutation = (
+  { __typename?: 'Mutation' }
+  & { setOrderStatus?: Maybe<(
+    { __typename?: 'Order' }
+    & Pick<Order, 'id' | 'orderId' | 'custId' | 'serviceId' | 'adminId' | 'lockerId' | 'createdAt' | 'updatedAt' | 'endOrder' | 'status' | 'pictUrl' | 'amount' | 'totalPrice'>
+    & { customer?: Maybe<(
+      { __typename?: 'Customer' }
+      & Pick<Customer, 'id' | 'custId' | 'username'>
+    )> }
+  )> }
 );
 
 export type UpdatePostMutationVariables = Exact<{
@@ -645,6 +703,32 @@ export type VoteMutation = (
   & Pick<Mutation, 'vote'>
 );
 
+export type ActiveOrderQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type ActiveOrderQuery = (
+  { __typename?: 'Query' }
+  & { activeOrder?: Maybe<Array<(
+    { __typename?: 'Order' }
+    & Pick<Order, 'id' | 'orderId' | 'custId' | 'serviceId' | 'adminId' | 'lockerId' | 'createdAt' | 'updatedAt' | 'endOrder' | 'status' | 'pictUrl' | 'amount' | 'totalPrice'>
+    & { customer?: Maybe<(
+      { __typename?: 'Customer' }
+      & Pick<Customer, 'id' | 'custId' | 'username'>
+    )> }
+  )>> }
+);
+
+export type IdentifyAdminQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type IdentifyAdminQuery = (
+  { __typename?: 'Query' }
+  & { identifyAdmin?: Maybe<(
+    { __typename?: 'Admin' }
+    & Pick<Admin, 'id' | 'username' | 'email' | 'createdAt' | 'roleId'>
+  )> }
+);
+
 export type CustomerQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -665,9 +749,7 @@ export type CustomerQuery = (
   )> }
 );
 
-export type CustomerOrderQueryVariables = Exact<{
-  custId: Scalars['String'];
-}>;
+export type CustomerOrderQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type CustomerOrderQuery = (
@@ -679,10 +761,10 @@ export type CustomerOrderQuery = (
       & Pick<OrderError, 'field' | 'message'>
     )>>, ogOrder?: Maybe<Array<(
       { __typename?: 'Order' }
-      & Pick<Order, 'orderId' | 'serviceId' | 'lockerId' | 'createdAt' | 'endOrder' | 'status' | 'pictUrl' | 'amount' | 'totalPrice'>
+      & Pick<Order, 'id' | 'orderId' | 'serviceId' | 'lockerId' | 'createdAt' | 'endOrder' | 'status' | 'pictUrl' | 'amount' | 'totalPrice'>
     )>>, histOrder?: Maybe<Array<(
       { __typename?: 'Order' }
-      & Pick<Order, 'orderId' | 'serviceId' | 'lockerId' | 'createdAt' | 'endOrder' | 'status' | 'pictUrl' | 'amount' | 'totalPrice'>
+      & Pick<Order, 'id' | 'orderId' | 'serviceId' | 'lockerId' | 'createdAt' | 'endOrder' | 'status' | 'pictUrl' | 'amount' | 'totalPrice'>
     )>> }
   ) }
 );
@@ -1009,6 +1091,49 @@ export function useLoginMutation(baseOptions?: Apollo.MutationHookOptions<LoginM
 export type LoginMutationHookResult = ReturnType<typeof useLoginMutation>;
 export type LoginMutationResult = Apollo.MutationResult<LoginMutation>;
 export type LoginMutationOptions = Apollo.BaseMutationOptions<LoginMutation, LoginMutationVariables>;
+export const LoginAdminDocument = gql`
+    mutation LoginAdmin($usernameOrEmail: String!, $password: String!) {
+  loginAdmin(usernameOrEmail: $usernameOrEmail, password: $password) {
+    errors {
+      field
+      message
+    }
+    admin {
+      id
+      username
+      email
+      createdAt
+      roleId
+    }
+  }
+}
+    `;
+export type LoginAdminMutationFn = Apollo.MutationFunction<LoginAdminMutation, LoginAdminMutationVariables>;
+
+/**
+ * __useLoginAdminMutation__
+ *
+ * To run a mutation, you first call `useLoginAdminMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useLoginAdminMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [loginAdminMutation, { data, loading, error }] = useLoginAdminMutation({
+ *   variables: {
+ *      usernameOrEmail: // value for 'usernameOrEmail'
+ *      password: // value for 'password'
+ *   },
+ * });
+ */
+export function useLoginAdminMutation(baseOptions?: Apollo.MutationHookOptions<LoginAdminMutation, LoginAdminMutationVariables>) {
+        return Apollo.useMutation<LoginAdminMutation, LoginAdminMutationVariables>(LoginAdminDocument, baseOptions);
+      }
+export type LoginAdminMutationHookResult = ReturnType<typeof useLoginAdminMutation>;
+export type LoginAdminMutationResult = Apollo.MutationResult<LoginAdminMutation>;
+export type LoginAdminMutationOptions = Apollo.BaseMutationOptions<LoginAdminMutation, LoginAdminMutationVariables>;
 export const LoginCustomerDocument = gql`
     mutation LoginCustomer($usernameOrEmail: String!, $password: String!) {
   loginCustomer(usernameOrEmail: $usernameOrEmail, password: $password) {
@@ -1171,16 +1296,18 @@ export const RegisterOrderDocument = gql`
       message
     }
     orderRes {
+      id
       orderId
-      custId
       serviceId
-      adminId
       lockerId
+      createdAt
       endOrder
       status
       pictUrl
+      custId
       amount
       totalPrice
+      adminId
     }
   }
 }
@@ -1210,6 +1337,55 @@ export function useRegisterOrderMutation(baseOptions?: Apollo.MutationHookOption
 export type RegisterOrderMutationHookResult = ReturnType<typeof useRegisterOrderMutation>;
 export type RegisterOrderMutationResult = Apollo.MutationResult<RegisterOrderMutation>;
 export type RegisterOrderMutationOptions = Apollo.BaseMutationOptions<RegisterOrderMutation, RegisterOrderMutationVariables>;
+export const SetOrderStatusDocument = gql`
+    mutation SetOrderStatus($options: SetOrderStatusInput!) {
+  setOrderStatus(options: $options) {
+    id
+    orderId
+    custId
+    serviceId
+    adminId
+    lockerId
+    createdAt
+    updatedAt
+    endOrder
+    status
+    pictUrl
+    amount
+    totalPrice
+    customer {
+      id
+      custId
+      username
+    }
+  }
+}
+    `;
+export type SetOrderStatusMutationFn = Apollo.MutationFunction<SetOrderStatusMutation, SetOrderStatusMutationVariables>;
+
+/**
+ * __useSetOrderStatusMutation__
+ *
+ * To run a mutation, you first call `useSetOrderStatusMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useSetOrderStatusMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [setOrderStatusMutation, { data, loading, error }] = useSetOrderStatusMutation({
+ *   variables: {
+ *      options: // value for 'options'
+ *   },
+ * });
+ */
+export function useSetOrderStatusMutation(baseOptions?: Apollo.MutationHookOptions<SetOrderStatusMutation, SetOrderStatusMutationVariables>) {
+        return Apollo.useMutation<SetOrderStatusMutation, SetOrderStatusMutationVariables>(SetOrderStatusDocument, baseOptions);
+      }
+export type SetOrderStatusMutationHookResult = ReturnType<typeof useSetOrderStatusMutation>;
+export type SetOrderStatusMutationResult = Apollo.MutationResult<SetOrderStatusMutation>;
+export type SetOrderStatusMutationOptions = Apollo.BaseMutationOptions<SetOrderStatusMutation, SetOrderStatusMutationVariables>;
 export const UpdatePostDocument = gql`
     mutation UpdatePost($id: Int!, $title: String!, $text: String!) {
   updatePost(id: $id, title: $title, text: $text) {
@@ -1278,6 +1454,91 @@ export function useVoteMutation(baseOptions?: Apollo.MutationHookOptions<VoteMut
 export type VoteMutationHookResult = ReturnType<typeof useVoteMutation>;
 export type VoteMutationResult = Apollo.MutationResult<VoteMutation>;
 export type VoteMutationOptions = Apollo.BaseMutationOptions<VoteMutation, VoteMutationVariables>;
+export const ActiveOrderDocument = gql`
+    query ActiveOrder {
+  activeOrder {
+    id
+    orderId
+    custId
+    serviceId
+    adminId
+    lockerId
+    createdAt
+    updatedAt
+    endOrder
+    status
+    pictUrl
+    amount
+    totalPrice
+    customer {
+      id
+      custId
+      username
+    }
+  }
+}
+    `;
+
+/**
+ * __useActiveOrderQuery__
+ *
+ * To run a query within a React component, call `useActiveOrderQuery` and pass it any options that fit your needs.
+ * When your component renders, `useActiveOrderQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useActiveOrderQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useActiveOrderQuery(baseOptions?: Apollo.QueryHookOptions<ActiveOrderQuery, ActiveOrderQueryVariables>) {
+        return Apollo.useQuery<ActiveOrderQuery, ActiveOrderQueryVariables>(ActiveOrderDocument, baseOptions);
+      }
+export function useActiveOrderLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ActiveOrderQuery, ActiveOrderQueryVariables>) {
+          return Apollo.useLazyQuery<ActiveOrderQuery, ActiveOrderQueryVariables>(ActiveOrderDocument, baseOptions);
+        }
+export type ActiveOrderQueryHookResult = ReturnType<typeof useActiveOrderQuery>;
+export type ActiveOrderLazyQueryHookResult = ReturnType<typeof useActiveOrderLazyQuery>;
+export type ActiveOrderQueryResult = Apollo.QueryResult<ActiveOrderQuery, ActiveOrderQueryVariables>;
+export const IdentifyAdminDocument = gql`
+    query IdentifyAdmin {
+  identifyAdmin {
+    id
+    username
+    email
+    createdAt
+    roleId
+  }
+}
+    `;
+
+/**
+ * __useIdentifyAdminQuery__
+ *
+ * To run a query within a React component, call `useIdentifyAdminQuery` and pass it any options that fit your needs.
+ * When your component renders, `useIdentifyAdminQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useIdentifyAdminQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useIdentifyAdminQuery(baseOptions?: Apollo.QueryHookOptions<IdentifyAdminQuery, IdentifyAdminQueryVariables>) {
+        return Apollo.useQuery<IdentifyAdminQuery, IdentifyAdminQueryVariables>(IdentifyAdminDocument, baseOptions);
+      }
+export function useIdentifyAdminLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<IdentifyAdminQuery, IdentifyAdminQueryVariables>) {
+          return Apollo.useLazyQuery<IdentifyAdminQuery, IdentifyAdminQueryVariables>(IdentifyAdminDocument, baseOptions);
+        }
+export type IdentifyAdminQueryHookResult = ReturnType<typeof useIdentifyAdminQuery>;
+export type IdentifyAdminLazyQueryHookResult = ReturnType<typeof useIdentifyAdminLazyQuery>;
+export type IdentifyAdminQueryResult = Apollo.QueryResult<IdentifyAdminQuery, IdentifyAdminQueryVariables>;
 export const CustomerDocument = gql`
     query Customer {
   identifyCustomer {
@@ -1322,13 +1583,14 @@ export type CustomerQueryHookResult = ReturnType<typeof useCustomerQuery>;
 export type CustomerLazyQueryHookResult = ReturnType<typeof useCustomerLazyQuery>;
 export type CustomerQueryResult = Apollo.QueryResult<CustomerQuery, CustomerQueryVariables>;
 export const CustomerOrderDocument = gql`
-    query CustomerOrder($custId: String!) {
-  customerOrder(custId: $custId) {
+    query CustomerOrder {
+  customerOrder {
     errors {
       field
       message
     }
     ogOrder {
+      id
       orderId
       serviceId
       lockerId
@@ -1340,6 +1602,7 @@ export const CustomerOrderDocument = gql`
       totalPrice
     }
     histOrder {
+      id
       orderId
       serviceId
       lockerId
@@ -1366,11 +1629,10 @@ export const CustomerOrderDocument = gql`
  * @example
  * const { data, loading, error } = useCustomerOrderQuery({
  *   variables: {
- *      custId: // value for 'custId'
  *   },
  * });
  */
-export function useCustomerOrderQuery(baseOptions: Apollo.QueryHookOptions<CustomerOrderQuery, CustomerOrderQueryVariables>) {
+export function useCustomerOrderQuery(baseOptions?: Apollo.QueryHookOptions<CustomerOrderQuery, CustomerOrderQueryVariables>) {
         return Apollo.useQuery<CustomerOrderQuery, CustomerOrderQueryVariables>(CustomerOrderDocument, baseOptions);
       }
 export function useCustomerOrderLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<CustomerOrderQuery, CustomerOrderQueryVariables>) {

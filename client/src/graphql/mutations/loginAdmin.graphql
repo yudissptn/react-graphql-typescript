@@ -1,0 +1,15 @@
+mutation LoginAdmin($usernameOrEmail: String!, $password: String!) {
+  loginAdmin(usernameOrEmail: $usernameOrEmail, password: $password) {
+    errors {
+      field
+      message
+    }
+    admin {
+      id
+      username
+      email
+      createdAt
+      roleId
+    }
+  }
+}
