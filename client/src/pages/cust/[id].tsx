@@ -22,8 +22,10 @@ import useIsAuth from "../../utils/useIsAuth";
 import { format } from "date-fns";
 import { StatusColor } from "../../utils/commonInterface";
 import { MdAccountBalanceWallet } from "react-icons/md";
+import { useRouter } from "next/router";
 
 export const CustomerPage = ({}) => {
+  const router = useRouter();
   const [iconColor, setIconColor] = useState("whitesmoke");
   const { data, loading } = useIsAuth();
   const intId = useGetIntId();
@@ -56,7 +58,8 @@ export const CustomerPage = ({}) => {
                 w={{ base: 4, md: 6 }}
                 h={{ base: 4, md: 6 }}
                 ml={{ base: 0, md: 2 }}
-                // onClick={() => setSection("topup")}
+                onClick={() => router.push("/topup")}
+                cursor="pointer"
               ></Icon>
             </Flex>
             <Logout />{" "}

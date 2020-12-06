@@ -6,6 +6,8 @@ import {
   PrimaryGeneratedColumn,
   ManyToOne,
   PrimaryColumn,
+  CreateDateColumn,
+  UpdateDateColumn,
 } from "typeorm";
 import { CustomerProfile } from "./CustomerProfile";
 
@@ -40,6 +42,14 @@ export class TopupBalance extends BaseEntity {
   @Field()
   @Column()
   amount!: number;
+
+  @Field(() => String)
+  @CreateDateColumn()
+  createdAt!: Date;
+
+  @Field(() => String)
+  @UpdateDateColumn()
+  updatedAt!: Date;
 
   @Field()
   @Column({ type: "enum", enum: TopUpStatus, default: TopUpStatus.PLACED })

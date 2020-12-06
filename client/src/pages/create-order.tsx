@@ -54,6 +54,8 @@ import {
 import { useRouter } from "next/router";
 import gql from "graphql-tag";
 import { toErrorMap } from "../utils/toErrorMap";
+import { useImageUpload } from "../utils/useImageUpload";
+import { ImageUpload } from "../components/ImageUpload";
 
 interface createOrderProps {}
 
@@ -67,9 +69,13 @@ interface IOrderForm {
 const createOrder: React.FC<createOrderProps> = ({}) => {
   const router = useRouter();
   const [tabIndex, setTabIndex] = useState(0);
-  const [preview, setPreview] = useState("");
-  const [uploadedPict, setPicture] = useState(null);
-  const [, setErrors] = useState("");
+  const {
+    preview,
+    uploadedPict,
+    getRootPropsDZ,
+    getInputProps,
+    isDragActive,
+  } = useImageUpload();
   const { data: dataCust, client } = useCustomerQuery();
   const [orderData, setOrderData] = useState<IOrderForm>({
     pict: "",
@@ -115,34 +121,12 @@ const createOrder: React.FC<createOrderProps> = ({}) => {
     defaultValue: "NORMAL",
   });
 
-  const onDrop = useCallback(
-    async ([acceptedFiles]) => {
-      // Do something with the files
-      if (acceptedFiles) {
-        setPreview(URL.createObjectURL(acceptedFiles));
-        setPicture(acceptedFiles);
-      } else {
-        setErrors("Something went wrong. Check file type and size (max. 1 MB)");
-      }
-    },
-    [setPicture]
-  );
-
   useEffect(() => {
     setOrderData({
       ...orderData,
       pict: preview,
     });
   }, [preview]);
-
-  const {
-    getRootProps: getRootPropsDZ,
-    getInputProps,
-    isDragActive,
-  } = useDropzone({
-    onDrop,
-    maxSize: 1024000,
-  });
 
   const group = getRootProps();
 
@@ -341,47 +325,12 @@ const createOrder: React.FC<createOrderProps> = ({}) => {
                           Upload picture of your laundry on weight scale
                           provided
                         </FormLabel>
-                        <Box
-                          h={50}
-                          w={350}
-                          borderWidth="1px"
-                          borderColor="gray.50"
-                          shadow="md"
-                          mr="auto"
-                          mt={2}
-                        >
-                          <div {...getRootPropsDZ()}>
-                            <input {...getInputProps()} />
-                            {isDragActive ? (
-                              <p>Drop the files here ...</p>
-                            ) : (
-                              <p>
-                                Drag 'n' drop some files here, or click to
-                                select files
-                              </p>
-                            )}
-                          </div>
-                        </Box>
-                        {preview && (
-                          <Flex
-                            h={220}
-                            w={350}
-                            borderWidth="1px"
-                            borderColor="gray.50"
-                            shadow="md"
-                            mr="auto"
-                            mt={2}
-                            align="center"
-                            justify="center"
-                            py={2}
-                          >
-                            <Image
-                              src={preview}
-                              boxSize="200px"
-                              objectFit="cover"
-                            />
-                          </Flex>
-                        )}
+                        <ImageUpload
+                          preview={preview}
+                          getRootPropsDZ={getRootPropsDZ}
+                          getInputProps={getInputProps}
+                          isDragActive={isDragActive}
+                        />
                       </TabPanel>
                       <TabPanel>
                         <Text align="center" fontWeight={600}>

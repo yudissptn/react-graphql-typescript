@@ -1,0 +1,16 @@
+query TopUpList($cursor: String, $limit: Int!) {
+  topUpList(cursor: $cursor, limit: $limit) {
+    topUpList {
+      custId
+      pictUrl
+      amount
+      status
+      createdAt
+      customer {
+        lastName
+        firstName
+      }
+    }
+    hasMore
+  }
+}

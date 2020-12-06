@@ -27,6 +27,7 @@ export type Query = {
   identifyService?: Maybe<ServiceResponse>;
   customerOrder: CustomerOrderResponse;
   activeOrder?: Maybe<Array<Order>>;
+  topUpList?: Maybe<PaginatedTopUp>;
 };
 
 
@@ -48,6 +49,12 @@ export type QueryIdentifyLockerArgs = {
 
 export type QueryIdentifyServiceArgs = {
   serviceId: Scalars['Int'];
+};
+
+
+export type QueryTopUpListArgs = {
+  cursor?: Maybe<Scalars['String']>;
+  limit: Scalars['Int'];
 };
 
 export type PaginatedPosts = {
@@ -193,7 +200,7 @@ export type Order = {
   orderId: Scalars['String'];
   custId: Scalars['String'];
   serviceId: Scalars['Float'];
-  adminId?: Maybe<Scalars['Float']>;
+  adminId?: Maybe<Scalars['String']>;
   lockerId: Scalars['Float'];
   createdAt: Scalars['DateTime'];
   updatedAt: Scalars['DateTime'];
@@ -203,6 +210,24 @@ export type Order = {
   amount: Scalars['Float'];
   totalPrice: Scalars['Float'];
   customer?: Maybe<Customer>;
+};
+
+export type PaginatedTopUp = {
+  __typename?: 'PaginatedTopUp';
+  topUpList: Array<TopupBalance>;
+  hasMore: Scalars['Boolean'];
+};
+
+export type TopupBalance = {
+  __typename?: 'TopupBalance';
+  id: Scalars['Float'];
+  custId: Scalars['String'];
+  customer?: Maybe<CustomerProfile>;
+  pictUrl: Scalars['String'];
+  amount: Scalars['Float'];
+  createdAt: Scalars['String'];
+  updatedAt: Scalars['String'];
+  status: Scalars['String'];
 };
 
 export type Mutation = {
@@ -227,6 +252,7 @@ export type Mutation = {
   registerService: ServiceResponse;
   registerOrder: OrderResponse;
   setOrderStatus?: Maybe<Order>;
+  requestTopUp?: Maybe<TopupBalance>;
 };
 
 
@@ -332,6 +358,12 @@ export type MutationRegisterOrderArgs = {
 
 export type MutationSetOrderStatusArgs = {
   options: SetOrderStatusInput;
+};
+
+
+export type MutationRequestTopUpArgs = {
+  pictUrl: Scalars['String'];
+  amount: Scalars['Int'];
 };
 
 export type PostInput = {
@@ -660,6 +692,24 @@ export type RegisterOrderMutation = (
   ) }
 );
 
+export type RequestTopUpMutationVariables = Exact<{
+  pictUrl: Scalars['String'];
+  amount: Scalars['Int'];
+}>;
+
+
+export type RequestTopUpMutation = (
+  { __typename?: 'Mutation' }
+  & { requestTopUp?: Maybe<(
+    { __typename?: 'TopupBalance' }
+    & Pick<TopupBalance, 'custId' | 'pictUrl' | 'amount'>
+    & { customer?: Maybe<(
+      { __typename?: 'CustomerProfile' }
+      & Pick<CustomerProfile, 'firstName' | 'lastName'>
+    )> }
+  )> }
+);
+
 export type SetOrderStatusMutationVariables = Exact<{
   options: SetOrderStatusInput;
 }>;
@@ -851,6 +901,28 @@ export type PostsQuery = (
       & PostSnippetFragment
     )> }
   ) }
+);
+
+export type TopUpListQueryVariables = Exact<{
+  cursor?: Maybe<Scalars['String']>;
+  limit: Scalars['Int'];
+}>;
+
+
+export type TopUpListQuery = (
+  { __typename?: 'Query' }
+  & { topUpList?: Maybe<(
+    { __typename?: 'PaginatedTopUp' }
+    & Pick<PaginatedTopUp, 'hasMore'>
+    & { topUpList: Array<(
+      { __typename?: 'TopupBalance' }
+      & Pick<TopupBalance, 'custId' | 'pictUrl' | 'amount' | 'status' | 'createdAt'>
+      & { customer?: Maybe<(
+        { __typename?: 'CustomerProfile' }
+        & Pick<CustomerProfile, 'lastName' | 'firstName'>
+      )> }
+    )> }
+  )> }
 );
 
 export const PostSnippetFragmentDoc = gql`
@@ -1337,6 +1409,45 @@ export function useRegisterOrderMutation(baseOptions?: Apollo.MutationHookOption
 export type RegisterOrderMutationHookResult = ReturnType<typeof useRegisterOrderMutation>;
 export type RegisterOrderMutationResult = Apollo.MutationResult<RegisterOrderMutation>;
 export type RegisterOrderMutationOptions = Apollo.BaseMutationOptions<RegisterOrderMutation, RegisterOrderMutationVariables>;
+export const RequestTopUpDocument = gql`
+    mutation RequestTopUp($pictUrl: String!, $amount: Int!) {
+  requestTopUp(pictUrl: $pictUrl, amount: $amount) {
+    custId
+    pictUrl
+    amount
+    customer {
+      firstName
+      lastName
+    }
+  }
+}
+    `;
+export type RequestTopUpMutationFn = Apollo.MutationFunction<RequestTopUpMutation, RequestTopUpMutationVariables>;
+
+/**
+ * __useRequestTopUpMutation__
+ *
+ * To run a mutation, you first call `useRequestTopUpMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRequestTopUpMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [requestTopUpMutation, { data, loading, error }] = useRequestTopUpMutation({
+ *   variables: {
+ *      pictUrl: // value for 'pictUrl'
+ *      amount: // value for 'amount'
+ *   },
+ * });
+ */
+export function useRequestTopUpMutation(baseOptions?: Apollo.MutationHookOptions<RequestTopUpMutation, RequestTopUpMutationVariables>) {
+        return Apollo.useMutation<RequestTopUpMutation, RequestTopUpMutationVariables>(RequestTopUpDocument, baseOptions);
+      }
+export type RequestTopUpMutationHookResult = ReturnType<typeof useRequestTopUpMutation>;
+export type RequestTopUpMutationResult = Apollo.MutationResult<RequestTopUpMutation>;
+export type RequestTopUpMutationOptions = Apollo.BaseMutationOptions<RequestTopUpMutation, RequestTopUpMutationVariables>;
 export const SetOrderStatusDocument = gql`
     mutation SetOrderStatus($options: SetOrderStatusInput!) {
   setOrderStatus(options: $options) {
@@ -1838,3 +1949,48 @@ export function usePostsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<Post
 export type PostsQueryHookResult = ReturnType<typeof usePostsQuery>;
 export type PostsLazyQueryHookResult = ReturnType<typeof usePostsLazyQuery>;
 export type PostsQueryResult = Apollo.QueryResult<PostsQuery, PostsQueryVariables>;
+export const TopUpListDocument = gql`
+    query TopUpList($cursor: String, $limit: Int!) {
+  topUpList(cursor: $cursor, limit: $limit) {
+    topUpList {
+      custId
+      pictUrl
+      amount
+      status
+      createdAt
+      customer {
+        lastName
+        firstName
+      }
+    }
+    hasMore
+  }
+}
+    `;
+
+/**
+ * __useTopUpListQuery__
+ *
+ * To run a query within a React component, call `useTopUpListQuery` and pass it any options that fit your needs.
+ * When your component renders, `useTopUpListQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useTopUpListQuery({
+ *   variables: {
+ *      cursor: // value for 'cursor'
+ *      limit: // value for 'limit'
+ *   },
+ * });
+ */
+export function useTopUpListQuery(baseOptions: Apollo.QueryHookOptions<TopUpListQuery, TopUpListQueryVariables>) {
+        return Apollo.useQuery<TopUpListQuery, TopUpListQueryVariables>(TopUpListDocument, baseOptions);
+      }
+export function useTopUpListLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<TopUpListQuery, TopUpListQueryVariables>) {
+          return Apollo.useLazyQuery<TopUpListQuery, TopUpListQueryVariables>(TopUpListDocument, baseOptions);
+        }
+export type TopUpListQueryHookResult = ReturnType<typeof useTopUpListQuery>;
+export type TopUpListLazyQueryHookResult = ReturnType<typeof useTopUpListLazyQuery>;
+export type TopUpListQueryResult = Apollo.QueryResult<TopUpListQuery, TopUpListQueryVariables>;

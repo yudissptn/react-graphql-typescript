@@ -1,0 +1,11 @@
+mutation RequestTopUp($pictUrl: String!, $amount: Int!) {
+  requestTopUp(pictUrl: $pictUrl, amount: $amount) {
+    custId
+    pictUrl
+    amount
+    customer {
+      firstName
+      lastName
+    }
+  }
+}
