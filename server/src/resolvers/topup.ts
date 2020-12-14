@@ -7,11 +7,13 @@ import {
   Query,
   ObjectType,
   Field,
+  InputType,
 } from "type-graphql";
-import { TopupBalance } from "../entities/TopupBalance";
+import { TopupBalance, TopUpStatus } from "../entities/TopupBalance";
 import { MyContext } from "../types";
 import { CustomerProfile } from "../entities/CustomerProfile";
 import { getConnection, getRepository } from "typeorm";
+import { Admin } from "../entities/Admin";
 
 @ObjectType()
 class PaginatedTopUp {
@@ -19,6 +21,14 @@ class PaginatedTopUp {
   topUpList: TopupBalance[];
   @Field()
   hasMore: boolean;
+}
+
+@InputType()
+export class SetTopUpStatusInput {
+  @Field()
+  id: number;
+  @Field((_type) => TopUpStatus)
+  status: TopUpStatus;
 }
 
 @Resolver(TopupBalance)
@@ -68,19 +78,6 @@ export class TopupBalanceResolver {
       cursorReplacements = new Date(parseInt(cursor));
     }
 
-    // const topUp = await getConnection().query(
-    //   `
-    // select p.*
-    //   from topup_balance p
-    //   inner join customer_profile
-    //   on p."custId" = customer_profile."custId"
-    //   ${cursor ? `where p."createdAt" < $2` : ""}
-    //   order by p."createdAt" DESC
-    //   limit $1
-    // `,
-    //   replacements
-    // );
-
     const topUp = await getRepository(TopupBalance)
       .createQueryBuilder("tb")
       .innerJoinAndSelect(`tb.customer`, "customer_profile")
@@ -91,11 +88,43 @@ export class TopupBalanceResolver {
       .orderBy(`tb."createdAt"`, "DESC")
       .getMany();
 
-    console.log(topUp);
-
     return {
       topUpList: topUp.slice(0, limit),
       hasMore: topUp.length === limitPlusOne,
     };
+  }
+
+  @Mutation(() => Boolean, { nullable: true })
+  async setTopUpStatus(
+    @Arg("options") options: SetTopUpStatusInput,
+    @Ctx() { req }: MyContext
+  ) {
+    if (!req.session.adminId) {
+      return null;
+    }
+
+    const admin = await Admin.findOne({ where: { id: req.session.adminId } });
+    
+    const topup =  await TopupBalance.findOne({where: { id: options.id},  relations: ["customer"],})
+
+    if(options.status === "CONFIRMED" && topup?.status !== "CONFIRMED"){
+      const newBalance = (topup?.customer.balance || 0) + (topup?.amount || 0)
+      console.log(newBalance)
+      await getConnection()
+      .createQueryBuilder()
+      .update(CustomerProfile)
+      .set({balance: newBalance})
+      .where(`"custId" = :custId`, {custId: topup?.custId})
+      .execute()
+    }
+
+    await getConnection()
+    .createQueryBuilder()
+    .update(TopupBalance)
+    .set({status: options.status, adminId: admin?.username})
+    .where("id = :id", {id: options.id})
+    .execute()
+    
+    return true
   }
 }

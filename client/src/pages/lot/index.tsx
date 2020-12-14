@@ -16,7 +16,7 @@ import { Logout } from "../../components/Logout";
 import { HamburgerIcon, ArrowLeftIcon } from "@chakra-ui/icons";
 import { SiGoogleanalytics } from "react-icons/si";
 import { MdPersonAdd, MdAccountBalanceWallet } from "react-icons/md";
-import AdminContent from "../../components/AdminContent";
+import AdminContent from "./dashboard/AdminContent";
 
 interface AdminHome {}
 
@@ -96,7 +96,7 @@ const home: React.FC<AdminHome> = ({}) => {
             </>
           )}
         </NavBarWrapper>
-        <AdminContent contentSelected={section} />
+        <AdminContent contentSelected={section} admin={data?.identifyAdmin?.username} />
       </Flex>
     </Flex>
   ) : (

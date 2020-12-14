@@ -18,7 +18,7 @@ export const Logout: React.FC<LogoutProps> = ({}) => {
         colorMode === "dark" && toggleColorMode();
         await logout();
         await apolloClient.resetStore();
-        router.push("/");
+        router.replace("/");
       }}
       isLoading={logoutFetching}
       style={{ textDecoration: "none" }}

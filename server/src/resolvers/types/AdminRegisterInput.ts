@@ -1,7 +1,7 @@
 import { InputType, Field, registerEnumType } from "type-graphql";
 
 export enum RoleTypeId {
-  SkYMEN,
+  SKYMEN,
   SS,
   AP,
   FLEET,

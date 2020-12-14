@@ -22,6 +22,7 @@ export type Query = {
   post?: Maybe<Post>;
   me?: Maybe<User>;
   identifyAdmin?: Maybe<Admin>;
+  adminList: Array<Admin>;
   identifyCustomer?: Maybe<CustomerResponse>;
   identifyLocker?: Maybe<LockerResponse>;
   identifyService?: Maybe<ServiceResponse>;
@@ -222,6 +223,7 @@ export type TopupBalance = {
   __typename?: 'TopupBalance';
   id: Scalars['Float'];
   custId: Scalars['String'];
+  adminId?: Maybe<Scalars['String']>;
   customer?: Maybe<CustomerProfile>;
   pictUrl: Scalars['String'];
   amount: Scalars['Float'];
@@ -245,6 +247,7 @@ export type Mutation = {
   registerAdmin: AdminResponse;
   loginAdmin: AdminResponse;
   updateCustomerBalance?: Maybe<CustomerProfile>;
+  deleteAdmin?: Maybe<Scalars['Boolean']>;
   registerCustomer: CustomerResponse;
   loginCustomer: CustomerResponse;
   deleteCustomer: Scalars['Boolean'];
@@ -253,6 +256,7 @@ export type Mutation = {
   registerOrder: OrderResponse;
   setOrderStatus?: Maybe<Order>;
   requestTopUp?: Maybe<TopupBalance>;
+  setTopUpStatus?: Maybe<Scalars['Boolean']>;
 };
 
 
@@ -325,6 +329,11 @@ export type MutationUpdateCustomerBalanceArgs = {
 };
 
 
+export type MutationDeleteAdminArgs = {
+  id: Scalars['Int'];
+};
+
+
 export type MutationRegisterCustomerArgs = {
   options: CustomerRegisterInput;
 };
@@ -364,6 +373,11 @@ export type MutationSetOrderStatusArgs = {
 export type MutationRequestTopUpArgs = {
   pictUrl: Scalars['String'];
   amount: Scalars['Int'];
+};
+
+
+export type MutationSetTopUpStatusArgs = {
+  options: SetTopUpStatusInput;
 };
 
 export type PostInput = {
@@ -419,7 +433,7 @@ export type AdminRegisterInput = {
 };
 
 export enum RoleTypeId {
-  SkYmen = 'SkYMEN',
+  Skymen = 'SKYMEN',
   Ss = 'SS',
   Ap = 'AP',
   Fleet = 'FLEET'
@@ -482,6 +496,17 @@ export enum OrderStatus {
   Confirmed = 'CONFIRMED',
   Process = 'PROCESS',
   Delivered = 'DELIVERED'
+}
+
+export type SetTopUpStatusInput = {
+  id: Scalars['Float'];
+  status: TopUpStatus;
+};
+
+export enum TopUpStatus {
+  Placed = 'PLACED',
+  Confirmed = 'CONFIRMED',
+  Rejected = 'REJECTED'
 }
 
 export type PostSnippetFragment = (
@@ -553,6 +578,16 @@ export type CreatePostMutation = (
     { __typename?: 'Post' }
     & Pick<Post, 'id' | 'createdAt' | 'updatedAt' | 'title' | 'text'>
   ) }
+);
+
+export type DeleteAdminMutationVariables = Exact<{
+  id: Scalars['Int'];
+}>;
+
+
+export type DeleteAdminMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'deleteAdmin'>
 );
 
 export type DeletePostMutationVariables = Exact<{
@@ -651,6 +686,25 @@ export type RegisterMutation = (
   ) }
 );
 
+export type RegisterAdminMutationVariables = Exact<{
+  options: AdminRegisterInput;
+}>;
+
+
+export type RegisterAdminMutation = (
+  { __typename?: 'Mutation' }
+  & { registerAdmin: (
+    { __typename?: 'AdminResponse' }
+    & { errors?: Maybe<Array<(
+      { __typename?: 'AdminError' }
+      & Pick<AdminError, 'field' | 'message'>
+    )>>, admin?: Maybe<(
+      { __typename?: 'Admin' }
+      & Pick<Admin, 'id' | 'username' | 'email' | 'createdAt' | 'roleId'>
+    )> }
+  ) }
+);
+
 export type RegisterCustomerMutationVariables = Exact<{
   options: CustomerRegisterInput;
 }>;
@@ -727,6 +781,16 @@ export type SetOrderStatusMutation = (
   )> }
 );
 
+export type SetTopUpStatusMutationVariables = Exact<{
+  options: SetTopUpStatusInput;
+}>;
+
+
+export type SetTopUpStatusMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'setTopUpStatus'>
+);
+
 export type UpdatePostMutationVariables = Exact<{
   id: Scalars['Int'];
   title: Scalars['String'];
@@ -774,6 +838,17 @@ export type IdentifyAdminQueryVariables = Exact<{ [key: string]: never; }>;
 export type IdentifyAdminQuery = (
   { __typename?: 'Query' }
   & { identifyAdmin?: Maybe<(
+    { __typename?: 'Admin' }
+    & Pick<Admin, 'id' | 'username' | 'email' | 'createdAt' | 'roleId'>
+  )> }
+);
+
+export type AdminListQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type AdminListQuery = (
+  { __typename?: 'Query' }
+  & { adminList: Array<(
     { __typename?: 'Admin' }
     & Pick<Admin, 'id' | 'username' | 'email' | 'createdAt' | 'roleId'>
   )> }
@@ -916,10 +991,10 @@ export type TopUpListQuery = (
     & Pick<PaginatedTopUp, 'hasMore'>
     & { topUpList: Array<(
       { __typename?: 'TopupBalance' }
-      & Pick<TopupBalance, 'custId' | 'pictUrl' | 'amount' | 'status' | 'createdAt'>
+      & Pick<TopupBalance, 'id' | 'custId' | 'pictUrl' | 'amount' | 'adminId' | 'status' | 'createdAt' | 'updatedAt'>
       & { customer?: Maybe<(
         { __typename?: 'CustomerProfile' }
-        & Pick<CustomerProfile, 'lastName' | 'firstName'>
+        & Pick<CustomerProfile, 'lastName' | 'firstName' | 'balance'>
       )> }
     )> }
   )> }
@@ -1069,6 +1144,36 @@ export function useCreatePostMutation(baseOptions?: Apollo.MutationHookOptions<C
 export type CreatePostMutationHookResult = ReturnType<typeof useCreatePostMutation>;
 export type CreatePostMutationResult = Apollo.MutationResult<CreatePostMutation>;
 export type CreatePostMutationOptions = Apollo.BaseMutationOptions<CreatePostMutation, CreatePostMutationVariables>;
+export const DeleteAdminDocument = gql`
+    mutation DeleteAdmin($id: Int!) {
+  deleteAdmin(id: $id)
+}
+    `;
+export type DeleteAdminMutationFn = Apollo.MutationFunction<DeleteAdminMutation, DeleteAdminMutationVariables>;
+
+/**
+ * __useDeleteAdminMutation__
+ *
+ * To run a mutation, you first call `useDeleteAdminMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteAdminMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteAdminMutation, { data, loading, error }] = useDeleteAdminMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useDeleteAdminMutation(baseOptions?: Apollo.MutationHookOptions<DeleteAdminMutation, DeleteAdminMutationVariables>) {
+        return Apollo.useMutation<DeleteAdminMutation, DeleteAdminMutationVariables>(DeleteAdminDocument, baseOptions);
+      }
+export type DeleteAdminMutationHookResult = ReturnType<typeof useDeleteAdminMutation>;
+export type DeleteAdminMutationResult = Apollo.MutationResult<DeleteAdminMutation>;
+export type DeleteAdminMutationOptions = Apollo.BaseMutationOptions<DeleteAdminMutation, DeleteAdminMutationVariables>;
 export const DeletePostDocument = gql`
     mutation DeletePost($id: Int!, $pictUrl: String!) {
   deletePost(id: $id, pictUrl: $pictUrl)
@@ -1308,6 +1413,48 @@ export function useRegisterMutation(baseOptions?: Apollo.MutationHookOptions<Reg
 export type RegisterMutationHookResult = ReturnType<typeof useRegisterMutation>;
 export type RegisterMutationResult = Apollo.MutationResult<RegisterMutation>;
 export type RegisterMutationOptions = Apollo.BaseMutationOptions<RegisterMutation, RegisterMutationVariables>;
+export const RegisterAdminDocument = gql`
+    mutation RegisterAdmin($options: AdminRegisterInput!) {
+  registerAdmin(options: $options) {
+    errors {
+      field
+      message
+    }
+    admin {
+      id
+      username
+      email
+      createdAt
+      roleId
+    }
+  }
+}
+    `;
+export type RegisterAdminMutationFn = Apollo.MutationFunction<RegisterAdminMutation, RegisterAdminMutationVariables>;
+
+/**
+ * __useRegisterAdminMutation__
+ *
+ * To run a mutation, you first call `useRegisterAdminMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRegisterAdminMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [registerAdminMutation, { data, loading, error }] = useRegisterAdminMutation({
+ *   variables: {
+ *      options: // value for 'options'
+ *   },
+ * });
+ */
+export function useRegisterAdminMutation(baseOptions?: Apollo.MutationHookOptions<RegisterAdminMutation, RegisterAdminMutationVariables>) {
+        return Apollo.useMutation<RegisterAdminMutation, RegisterAdminMutationVariables>(RegisterAdminDocument, baseOptions);
+      }
+export type RegisterAdminMutationHookResult = ReturnType<typeof useRegisterAdminMutation>;
+export type RegisterAdminMutationResult = Apollo.MutationResult<RegisterAdminMutation>;
+export type RegisterAdminMutationOptions = Apollo.BaseMutationOptions<RegisterAdminMutation, RegisterAdminMutationVariables>;
 export const RegisterCustomerDocument = gql`
     mutation RegisterCustomer($options: CustomerRegisterInput!) {
   registerCustomer(options: $options) {
@@ -1497,6 +1644,36 @@ export function useSetOrderStatusMutation(baseOptions?: Apollo.MutationHookOptio
 export type SetOrderStatusMutationHookResult = ReturnType<typeof useSetOrderStatusMutation>;
 export type SetOrderStatusMutationResult = Apollo.MutationResult<SetOrderStatusMutation>;
 export type SetOrderStatusMutationOptions = Apollo.BaseMutationOptions<SetOrderStatusMutation, SetOrderStatusMutationVariables>;
+export const SetTopUpStatusDocument = gql`
+    mutation SetTopUpStatus($options: SetTopUpStatusInput!) {
+  setTopUpStatus(options: $options)
+}
+    `;
+export type SetTopUpStatusMutationFn = Apollo.MutationFunction<SetTopUpStatusMutation, SetTopUpStatusMutationVariables>;
+
+/**
+ * __useSetTopUpStatusMutation__
+ *
+ * To run a mutation, you first call `useSetTopUpStatusMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useSetTopUpStatusMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [setTopUpStatusMutation, { data, loading, error }] = useSetTopUpStatusMutation({
+ *   variables: {
+ *      options: // value for 'options'
+ *   },
+ * });
+ */
+export function useSetTopUpStatusMutation(baseOptions?: Apollo.MutationHookOptions<SetTopUpStatusMutation, SetTopUpStatusMutationVariables>) {
+        return Apollo.useMutation<SetTopUpStatusMutation, SetTopUpStatusMutationVariables>(SetTopUpStatusDocument, baseOptions);
+      }
+export type SetTopUpStatusMutationHookResult = ReturnType<typeof useSetTopUpStatusMutation>;
+export type SetTopUpStatusMutationResult = Apollo.MutationResult<SetTopUpStatusMutation>;
+export type SetTopUpStatusMutationOptions = Apollo.BaseMutationOptions<SetTopUpStatusMutation, SetTopUpStatusMutationVariables>;
 export const UpdatePostDocument = gql`
     mutation UpdatePost($id: Int!, $title: String!, $text: String!) {
   updatePost(id: $id, title: $title, text: $text) {
@@ -1650,6 +1827,42 @@ export function useIdentifyAdminLazyQuery(baseOptions?: Apollo.LazyQueryHookOpti
 export type IdentifyAdminQueryHookResult = ReturnType<typeof useIdentifyAdminQuery>;
 export type IdentifyAdminLazyQueryHookResult = ReturnType<typeof useIdentifyAdminLazyQuery>;
 export type IdentifyAdminQueryResult = Apollo.QueryResult<IdentifyAdminQuery, IdentifyAdminQueryVariables>;
+export const AdminListDocument = gql`
+    query AdminList {
+  adminList {
+    id
+    username
+    email
+    createdAt
+    roleId
+  }
+}
+    `;
+
+/**
+ * __useAdminListQuery__
+ *
+ * To run a query within a React component, call `useAdminListQuery` and pass it any options that fit your needs.
+ * When your component renders, `useAdminListQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useAdminListQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useAdminListQuery(baseOptions?: Apollo.QueryHookOptions<AdminListQuery, AdminListQueryVariables>) {
+        return Apollo.useQuery<AdminListQuery, AdminListQueryVariables>(AdminListDocument, baseOptions);
+      }
+export function useAdminListLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<AdminListQuery, AdminListQueryVariables>) {
+          return Apollo.useLazyQuery<AdminListQuery, AdminListQueryVariables>(AdminListDocument, baseOptions);
+        }
+export type AdminListQueryHookResult = ReturnType<typeof useAdminListQuery>;
+export type AdminListLazyQueryHookResult = ReturnType<typeof useAdminListLazyQuery>;
+export type AdminListQueryResult = Apollo.QueryResult<AdminListQuery, AdminListQueryVariables>;
 export const CustomerDocument = gql`
     query Customer {
   identifyCustomer {
@@ -1953,14 +2166,18 @@ export const TopUpListDocument = gql`
     query TopUpList($cursor: String, $limit: Int!) {
   topUpList(cursor: $cursor, limit: $limit) {
     topUpList {
+      id
       custId
       pictUrl
       amount
+      adminId
       status
       createdAt
+      updatedAt
       customer {
         lastName
         firstName
+        balance
       }
     }
     hasMore

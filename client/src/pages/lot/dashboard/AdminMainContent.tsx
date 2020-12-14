@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { withApollo } from "../utils/withApollo";
+import { withApollo } from "../../../utils/withApollo";
 import {
   Flex,
   Heading,
@@ -17,11 +17,11 @@ import {
   OrderStatus,
   ActiveOrderQuery,
   ActiveOrderDocument,
-} from "../generated/graphql";
+} from "../../../generated/graphql";
 import { format } from "date-fns";
 import Link from "next/link";
 import { MdModeEdit } from "react-icons/md";
-import { StatusColor } from "../utils/commonInterface";
+import { StatusColor } from "../../../utils/commonInterface";
 
 interface AdminMainProps {}
 
@@ -75,7 +75,7 @@ const AdminMainContent: React.FC<AdminMainProps> = ({}) => {
           query: ActiveOrderDocument,
           data: {
             __typename: "Query",
-            activeOrder: [...newActiveOrder],
+            activeOrder: [...newActiveOrder || []],
           },
         });
       },

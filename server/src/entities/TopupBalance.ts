@@ -1,4 +1,4 @@
-import { Field, ObjectType, Int, registerEnumType } from "type-graphql";
+import { Field, ObjectType, registerEnumType } from "type-graphql";
 import {
   BaseEntity,
   Column,
@@ -11,9 +11,10 @@ import {
 } from "typeorm";
 import { CustomerProfile } from "./CustomerProfile";
 
-enum TopUpStatus {
+export enum TopUpStatus {
   PLACED = "PLACED",
   CONFIRMED = "CONFIRMED",
+  REJECTED = "REJECTED"
 }
 
 registerEnumType(TopUpStatus, {
@@ -30,6 +31,10 @@ export class TopupBalance extends BaseEntity {
   @Field()
   @PrimaryColumn()
   custId!: string;
+
+  @Field({ nullable: true })
+  @Column({ nullable: true })
+  adminId: string;
 
   @Field(() => CustomerProfile, { nullable: true })
   @ManyToOne(() => CustomerProfile, (customer) => customer.topup)

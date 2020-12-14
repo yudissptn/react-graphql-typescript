@@ -30,11 +30,10 @@ import {
   AlertDescription,
   CloseButton,
 } from "@chakra-ui/react";
-import React, { useState, useCallback, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { withApollo } from "../utils/withApollo";
 import { NavBarWrapper } from "../components/NavBarWrapper";
 import { Logout } from "../components/Logout";
-import { useDropzone } from "react-dropzone";
 import RadioCard from "./RadioCard";
 import { format } from "date-fns";
 import { addCurrency } from "../utils/communUtils";

@@ -1,14 +1,18 @@
 query TopUpList($cursor: String, $limit: Int!) {
   topUpList(cursor: $cursor, limit: $limit) {
     topUpList {
+      id
       custId
       pictUrl
       amount
+      adminId
       status
       createdAt
+      updatedAt
       customer {
         lastName
         firstName
+        balance
       }
     }
     hasMore

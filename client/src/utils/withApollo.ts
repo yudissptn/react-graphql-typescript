@@ -1,6 +1,10 @@
 import { createWithApollo } from "./createWithApollo";
 import { ApolloClient, InMemoryCache } from "@apollo/client";
-import { CustomerOrderResponse } from "../generated/graphql";
+import {
+  CustomerOrderResponse,
+  PaginatedTopUp,
+  PaginatedPosts,
+} from "../generated/graphql";
 import { Order } from "../generated/graphql";
 import { NextPageContext } from "next";
 import { createUploadLink } from "apollo-upload-client";
@@ -40,6 +44,23 @@ const createClient = (ctx: NextPageContext) =>
                     ...(incoming.ogOrder || []),
                     ...(existing?.ogOrder || []),
                   ],
+                };
+              },
+            },
+            topUpList: {
+              keyArgs: [],
+              merge(
+                existing: PaginatedTopUp | undefined,
+                incoming: PaginatedTopUp
+              ): PaginatedTopUp {
+                console.log("existing: ", existing);
+                console.log("incoming: ", incoming);
+                return {
+                  topUpList: [
+                    ...(existing?.topUpList || []),
+                    ...incoming.topUpList,
+                  ],
+                  hasMore: incoming.hasMore,
                 };
               },
             },

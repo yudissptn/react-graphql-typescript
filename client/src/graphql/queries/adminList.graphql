@@ -1,0 +1,9 @@
+query AdminList {
+  adminList {
+    id
+    username
+    email
+    createdAt
+    roleId
+  }
+}

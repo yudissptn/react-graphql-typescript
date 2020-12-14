@@ -1,0 +1,3 @@
+mutation SetTopUpStatus($options: SetTopUpStatusInput!) {
+  setTopUpStatus(options: $options)
+}

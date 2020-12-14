@@ -6,6 +6,7 @@ import {
   ObjectType,
   Field,
   Query,
+  Int,
 } from "type-graphql";
 import { Admin } from "../entities/Admin";
 import { AdminRegisterInput } from "./types/AdminRegisterInput";
@@ -139,5 +140,44 @@ export class AdminResolver {
       .execute();
 
     return await CustomerProfile.findOne({ where: { custId } });
+  }
+
+  @Query(() => [Admin])
+  async adminList(
+    @Ctx() { req }: MyContext
+  ){
+    if (!req.session!.adminId) {
+      return null;
+    }
+
+    return await Admin.find({
+      order: { roleId: "DESC"  }
+    })
+  }
+
+  @Mutation(() => Boolean, {nullable: true})
+  async deleteAdmin(
+    @Arg("id", () => Int) id:number,
+    @Ctx() { req }: MyContext
+  ) {
+    if (!req.session!.adminId) {
+      return null;
+    }
+
+    const admin = Admin.findOne({
+      where: {
+        id
+      }
+    })
+
+    if(!admin){
+      return false
+    }
+
+    await Admin.delete({
+      id
+    })
+
+    return true
   }
 }
