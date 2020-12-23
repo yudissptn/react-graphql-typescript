@@ -37,7 +37,7 @@ export const CustomerPage = ({}) => {
 
   if (orderLoading && loading) {
     return (
-      <Layout>
+      <Layout mt={8}>
         <div>Loading...</div>
       </Layout>
     );

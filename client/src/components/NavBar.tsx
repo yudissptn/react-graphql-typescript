@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 import {
   Box,
   Flex,
@@ -7,6 +7,13 @@ import {
   Heading,
   IconButton,
   Text,
+  Spacer,
+  Drawer,
+  DrawerBody,
+  DrawerContent,
+  DrawerOverlay,
+  DrawerCloseButton,
+  DrawerHeader,
 } from "@chakra-ui/react";
 import NextLink from "next/link";
 import { useCustomerQuery, useLogoutMutation } from "../generated/graphql";
@@ -14,7 +21,7 @@ import { isServer } from "../utils/isServer";
 import { useApolloClient } from "@apollo/client";
 import { HamburgerIcon, CloseIcon } from "@chakra-ui/icons";
 import { useRouter } from "next/router";
-import { NavBarWrapper } from "./NavBarWrapper";
+import { useDisclosure } from "@chakra-ui/react";
 
 interface NavBarProps {}
 
@@ -26,7 +33,9 @@ export const NavBar: React.FC<NavBarProps> = ({}) => {
     skip: isServer(),
   });
   const [show, setShow] = React.useState(false);
+  const registerRef = useRef<HTMLButtonElement>(null);
   const handleToggle = () => setShow(!show);
+  const { isOpen, onOpen, onClose } = useDisclosure();
   let body = null;
 
   //loading
@@ -36,19 +45,26 @@ export const NavBar: React.FC<NavBarProps> = ({}) => {
     body = (
       <>
         <Box>
+          <Button mr={6} size="lg" variant="ghost">
+            <Link style={{ textDecoration: "none" }}>
+              <Text fontSize="xl">Pricelist</Text>
+            </Link>
+          </Button>
+        </Box>
+        <Box h={50}>
           <NextLink href={"/login"}>
             <Button mr={6} mb={show ? 5 : 0} size="lg" variant="ghost">
               <Link style={{ textDecoration: "none" }}>
-                <Text fontSize={{ base: "xl", md: "2xl" }}>Login</Text>
+                <Text fontSize="xl">Login</Text>
               </Link>
             </Button>
           </NextLink>
         </Box>
         <Box>
           <NextLink href={"/register"}>
-            <Button bg="white" size={"lg"} variant="outline">
+            <Button bg="white" size={"lg"} variant="outline" ref={registerRef}>
               <Link style={{ textDecoration: "none" }}>
-                <Text fontSize={{ base: "xl", md: "2xl" }}>Register</Text>
+                <Text fontSize="xl">Register</Text>
               </Link>
             </Button>
           </NextLink>
@@ -78,38 +94,55 @@ export const NavBar: React.FC<NavBarProps> = ({}) => {
   }
 
   return (
-    <NavBarWrapper>
-      <Box m="1.4rem">
+    <Flex
+      as="nav"
+      position="sticky"
+      top={0}
+      align="center"
+      justify={{ base: "space-between", md: "space-evenly" }}
+      wrap="wrap"
+      bg="blue.50"
+      zIndex={10}
+      maxH={70}
+      p={{ base: 3, md: 0 }}
+    >
+      <Box maxH={"70px"} verticalAlign={"center"}>
         <NextLink href="/">
           <Link style={{ textDecoration: "none" }}>
-            <Heading size="2xl">Laundrobox</Heading>
+            <Heading size="xl" fontFamily={"initial"}>
+              {"H&H Box"}
+            </Heading>
           </Link>
         </NextLink>
-
-        <Box
-          display={{
-            base: show ? "block" : "none",
-            md: "none",
-          }}
-          width={{ base: "full", md: "auto" }}
-          alignItems="center"
-          flexGrow={1}
-          p="1.5rem"
-        >
-          {body}
-        </Box>
       </Box>
-
-      <Box mt={6} display={{ base: "flex", md: "none" }} onClick={handleToggle}>
+      <Box display={{ base: "block", md: "none" }} onClick={onOpen}>
         <IconButton
           aria-label="navbar-options"
           icon={show ? <CloseIcon /> : <HamburgerIcon />}
         />
       </Box>
-
-      <Box m="1.4rem" display={{ base: "none", md: "flex" }}>
+      <Flex
+        p={3}
+        display={{ base: "none", md: "flex" }}
+        justify="center"
+        align="center"
+      >
         {body}
-      </Box>
-    </NavBarWrapper>
+      </Flex>
+      <Drawer
+        placement="right"
+        onClose={onClose}
+        isOpen={isOpen}
+        initialFocusRef={registerRef}
+        blockScrollOnMount={false}
+      >
+        <DrawerOverlay />
+        <DrawerContent bg="blue.50" justifyContent="stretch">
+          <DrawerCloseButton />
+          <DrawerHeader borderBottomWidth="1px" minH={39}></DrawerHeader>
+          <DrawerBody>{body}</DrawerBody>
+        </DrawerContent>
+      </Drawer>
+    </Flex>
   );
 };

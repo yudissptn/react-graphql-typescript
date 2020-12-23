@@ -1182,6 +1182,13 @@
   resolved "https://registry.yarnpkg.com/@emotion/weak-memoize/-/weak-memoize-0.2.5.tgz#8eed982e2ee6f7f4e44c253e12962980791efd46"
   integrity sha512-6U71C2Wp7r5XtFtQzYrW5iKFT67OixrSxjI4MptCHzdSVlgabczzqLe0ZSgnub/5Kp4hSbpDB1tMytZY9pwxxA==
 
+"@googlemaps/js-api-loader@^1.7.0":
+  version "1.11.1"
+  resolved "https://registry.yarnpkg.com/@googlemaps/js-api-loader/-/js-api-loader-1.11.1.tgz#b7f02c04d8d8602fb4bd873b03685fccefce1c6f"
+  integrity sha512-2ug4uBu0onRXTAo7Yxkay5N7pdNIz3XpTElMTLdCtEfQDxikbjeR6GS8atVhblX+ubFBNlXvDzz7VtuXv0vMRQ==
+  dependencies:
+    fast-deep-equal "^3.1.3"
+
 "@graphql-codegen/cli@1.19.0":
   version "1.19.0"
   resolved "https://registry.yarnpkg.com/@graphql-codegen/cli/-/cli-1.19.0.tgz#1be1c6aef66265aac5ebdcbd23ea6bba2f45012e"
@@ -1592,6 +1599,11 @@
   resolved "https://registry.yarnpkg.com/@hapi/hoek/-/hoek-9.1.0.tgz#6c9eafc78c1529248f8f4d92b0799a712b6052c6"
   integrity sha512-i9YbZPN3QgfighY/1X1Pu118VUz2Fmmhd6b2n0/O8YVgGGfw0FbUYoA97k7FkpGJ+pLCFEDLUmAPPV4D1kpeFw==
 
+"@mapbox/point-geometry@^0.1.0":
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/@mapbox/point-geometry/-/point-geometry-0.1.0.tgz#8a83f9335c7860effa2eeeca254332aa0aeed8f2"
+  integrity sha1-ioP5M1x4YO/6Lu7KJUMyqgru2PI=
+
 "@next/env@10.0.2":
   version "10.0.2"
   resolved "https://registry.yarnpkg.com/@next/env/-/env-10.0.2.tgz#b0479a0d4d962f9f85a577298cee260c310dfa3f"
@@ -1728,6 +1740,13 @@
   resolved "https://registry.yarnpkg.com/@types/extract-files/-/extract-files-8.1.0.tgz#4728440e1d92a6d1d11ac47f5a10e3f9ce47f044"
   integrity sha512-ulxvlFU71yLVV3JxdBgryASAIp+aZQuQOpkhU1SznJlcWz0qsJCWHqdJqP6Lprs3blqGS5FH5GbBkU0977+Wew==
 
+"@types/google-map-react@^2.1.0":
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/@types/google-map-react/-/google-map-react-2.1.0.tgz#0acee58ae23f471d3dbbe345c273728458945ab6"
+  integrity sha512-HQF008Q8UKBBZu2T2++P5vx71IE52R2bHgmaKV8n6V5gyZIcrjsAe1OjIbgIN68aqjeo99N0/f10rYRyf2gTAA==
+  dependencies:
+    "@types/react" "*"
+
 "@types/http-proxy-agent@^2.0.2":
   version "2.0.2"
   resolved "https://registry.yarnpkg.com/@types/http-proxy-agent/-/http-proxy-agent-2.0.2.tgz#942c1f35c7e1f0edd1b6ffae5d0f9051cfb32be1"
@@ -1794,6 +1813,14 @@
   resolved "https://registry.yarnpkg.com/@types/prop-types/-/prop-types-15.7.3.tgz#2ab0d5da2e5815f94b0b9d4b95d1e5f243ab2ca7"
   integrity sha512-KfRL3PuHmqQLOG+2tGpRO26Ctg+Cq1E01D2DMriKEATHgWLfeNDmq9e29Q9WIky0dQ3NPkd1mzYH8Lm936Z9qw==
 
+"@types/react@*":
+  version "17.0.0"
+  resolved "https://registry.yarnpkg.com/@types/react/-/react-17.0.0.tgz#5af3eb7fad2807092f0046a1302b7823e27919b8"
+  integrity sha512-aj/L7RIMsRlWML3YB6KZiXB3fV2t41+5RBGYF8z+tAKU43Px8C3cYUZsDvf1/+Bm4FK21QWBrDutu8ZJ/70qOw==
+  dependencies:
+    "@types/prop-types" "*"
+    csstype "^3.0.2"
+
 "@types/react@^16.9.53":
   version "16.14.1"
   resolved "https://registry.yarnpkg.com/@types/react/-/react-16.14.1.tgz#da2ecb638385614a5573e16e4aa7daf936dbead5"
@@ -1805,6 +1832,11 @@
   version "1.4.2"
   resolved "https://registry.yarnpkg.com/@types/tinycolor2/-/tinycolor2-1.4.2.tgz#721ca5c5d1a2988b4a886e35c2ffc5735b6afbdf"
   integrity sha512-PeHg/AtdW6aaIO2a+98Xj7rWY4KC1E6yOy7AFknJQ7VXUGNrMlyxDFxJo7HqLtjQms/ZhhQX52mLVW/EX3JGOw==
+
+"@types/ua-parser-js@^0.7.35":
+  version "0.7.35"
+  resolved "https://registry.yarnpkg.com/@types/ua-parser-js/-/ua-parser-js-0.7.35.tgz#cca67a95deb9165e4b1f449471801e6489d3fe93"
+  integrity sha512-PsPx0RLbo2Un8+ff2buzYJnZjzwhD3jQHPOG2PtVIeOhkRDddMcKU8vJtHpzzfLB95dkUi0qAkfLg2l2Fd0yrQ==
 
 "@types/warning@^3.0.0":
   version "3.0.0"
@@ -3483,6 +3515,13 @@ dom-serializer@^1.0.1:
     domhandler "^3.0.0"
     entities "^2.0.0"
 
+dom7@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/dom7/-/dom7-3.0.0.tgz#b861ce5d67a6becd7aaa3ad02942ff14b1240331"
+  integrity sha512-oNlcUdHsC4zb7Msx7JN3K0Nro1dzJ48knvBOnDPKJ2GV9wl1i5vydJZUSyOfrkKFDZEud/jBsTk92S/VGSAe/g==
+  dependencies:
+    ssr-window "^3.0.0-alpha.1"
+
 domain-browser@^1.1.1:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/domain-browser/-/domain-browser-1.2.0.tgz#3d31f50191a6749dd1375a7f522e823d42e54eda"
@@ -3788,6 +3827,11 @@ eventemitter3@^3.1.0:
   resolved "https://registry.yarnpkg.com/eventemitter3/-/eventemitter3-3.1.2.tgz#2d3d48f9c346698fce83a85d7d664e98535df6e7"
   integrity sha512-tvtQIeLVHjDkJYnzf2dgVMxfuSGJeM/7UCG17TT4EumTfNtF+0nebF/4zWOIkCreAbtNqhGEboB6BWrwqNaw4Q==
 
+eventemitter3@^4.0.4:
+  version "4.0.7"
+  resolved "https://registry.yarnpkg.com/eventemitter3/-/eventemitter3-4.0.7.tgz#2de9b68f6528d5644ef5c59526a1b4a07306169f"
+  integrity sha512-8guHBZCwKnFhYdHr2ysuRWErTwhoN2X8XELRlrRwpmfeY2jjuUN4taQMsULKUVo1K4DvZl+0pgfyoysHxvmvEw==
+
 events@^3.0.0:
   version "3.2.0"
   resolved "https://registry.yarnpkg.com/events/-/events-3.2.0.tgz#93b87c18f8efcd4202a461aec4dfc0556b639379"
@@ -3889,7 +3933,7 @@ extsprintf@^1.2.0:
   resolved "https://registry.yarnpkg.com/extsprintf/-/extsprintf-1.4.0.tgz#e2689f8f356fad62cca65a3a91c5df5f9551692f"
   integrity sha1-4mifjzVvrWLMplo6kcXfX5VRaS8=
 
-fast-deep-equal@^3.1.1:
+fast-deep-equal@^3.1.1, fast-deep-equal@^3.1.3:
   version "3.1.3"
   resolved "https://registry.yarnpkg.com/fast-deep-equal/-/fast-deep-equal-3.1.3.tgz#3a7d56b559d6cbc3eb512325244e619a65c6c525"
   integrity sha512-f3qQ9oQy9j2AhBe/H9VC91wLmKBCCU/gDOnKNAYG5hswO7BLKj09Hc5HYNz9cGI++xlpDCIgDaitVs03ATR84Q==
@@ -4284,6 +4328,16 @@ globby@11.0.1:
     ignore "^5.1.4"
     merge2 "^1.3.0"
     slash "^3.0.0"
+
+google-map-react@^2.1.9:
+  version "2.1.9"
+  resolved "https://registry.yarnpkg.com/google-map-react/-/google-map-react-2.1.9.tgz#6e539ce8bf28e7b8cda6058402e7581d1d1cec3d"
+  integrity sha512-//Pa0o6sdspU2H0ehVztSDQSnYYeV6TY4Z6ftty34yiCJYLliOzeq17dA9uFkyUFdL+XwbTU6e9mfs+bjBMIzw==
+  dependencies:
+    "@googlemaps/js-api-loader" "^1.7.0"
+    "@mapbox/point-geometry" "^0.1.0"
+    eventemitter3 "^4.0.4"
+    prop-types "^15.7.2"
 
 got@^9.6.0:
   version "9.6.0"
@@ -6487,6 +6541,13 @@ react-icons@^4.1.0:
   resolved "https://registry.yarnpkg.com/react-icons/-/react-icons-4.1.0.tgz#9ca9bcbf2e3aee8e86e378bb9d465842947bbfc3"
   integrity sha512-FCXBg1JbbR0vWALXIxmFAfozHdVIJmmwCD81Jk0EKOt7Ax4AdBNcaRkWhR0NaKy9ugJgoY3fFvo0PHpte55pXg==
 
+react-id-swiper@2.3.2:
+  version "2.3.2"
+  resolved "https://registry.yarnpkg.com/react-id-swiper/-/react-id-swiper-2.3.2.tgz#acd35e51f1068b94a8066829b121ff9b29febaaa"
+  integrity sha512-lxlASsBok+M8YmwYICEXUaVj44AyCaGfSc+YGZX5vWCqKLnVj3ceUbFFBfO+G8Glrya7WJhrfvzMae0r77MCSQ==
+  dependencies:
+    object-assign "^4.1.1"
+
 react-is@16.13.1, react-is@^16.7.0, react-is@^16.8.1:
   version "16.13.1"
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-16.13.1.tgz#789729a4dc36de2999dc156dd6c1d9c18cea56a4"
@@ -7149,6 +7210,11 @@ sshpk@^1.7.0:
     safer-buffer "^2.0.2"
     tweetnacl "~0.14.0"
 
+ssr-window@^3.0.0, ssr-window@^3.0.0-alpha.1:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/ssr-window/-/ssr-window-3.0.0.tgz#fd5b82801638943e0cc704c4691801435af7ac37"
+  integrity sha512-q+8UfWDg9Itrg0yWK7oe5p/XRCJpJF9OBtXfOPgSJl+u3Xd5KI328RUEvUqSMVM9CiQUEf1QdBzJMkYGErj9QA==
+
 ssri@^6.0.1:
   version "6.0.1"
   resolved "https://registry.yarnpkg.com/ssri/-/ssri-6.0.1.tgz#2a3c41b28dd45b62b63676ecb74001265ae9edd8"
@@ -7389,6 +7455,15 @@ supports-color@^7.1.0:
   integrity sha512-qpCAvRl9stuOHveKsn7HncJRvv501qIacKzQlO/+Lwxc9+0q2wLyv4Dfvt80/DPn2pqOBsJdDiogXGR9+OvwRw==
   dependencies:
     has-flag "^4.0.0"
+
+swiper@^6.4.5:
+  version "6.4.5"
+  resolved "https://registry.yarnpkg.com/swiper/-/swiper-6.4.5.tgz#2aa9e7f59ed0578c411626bf24cdb5942609618e"
+  integrity sha512-MJIY0aXF6UKgUM+/tgwtOxI21fwRiT6QX2decd6m2L9OGA7jLBks8E0CuUuRqpQfmTInQrBPnBy8dqgOtr2O0w==
+  dependencies:
+    dom7 "^3.0.0"
+    ssr-window "^3.0.0"
+    tslib "^2.0.0"
 
 symbol-observable@^1.0.4, symbol-observable@^1.1.0:
   version "1.2.0"

@@ -25,7 +25,6 @@ import {
 } from "../../../generated/graphql";
 import { format } from "date-fns";
 import { AddIcon } from "@chakra-ui/icons";
-import gql from "graphql-tag";
 import { Formik, Form, Field, FieldProps } from "formik";
 import { InputField } from "../../../components/InputField";
 import { toErrorMap } from "../../../utils/toErrorMap"
@@ -270,7 +269,7 @@ const AdminAddAdmin: React.FC<AdminAddAdminProps> = ({ admin }) => {
           }
         }}
       >
-        {({ values, isSubmitting }) => (
+        {({ isSubmitting }) => (
           <Form>
              <InputField
               name="username"
