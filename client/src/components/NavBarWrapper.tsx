@@ -12,7 +12,6 @@ export const NavBarWrapper: React.FC<NavBarWrapper> = ({
   children,
   fullW,
   disableSticky,
-  justify,
   grow,
 }) => {
   const { colorMode } = useColorMode();

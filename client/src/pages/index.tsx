@@ -273,7 +273,7 @@ const Index: React.FC<{}> = () => {
               w={"100%"}
               zIndex={-1}
             />
-            <Box p={3}>
+            <Box p={3} w={"100%"}>
               <Tabs variant="enclosed-colored" isFitted>
                 <TabList>
                   <Tab>Basic</Tab>
@@ -283,62 +283,72 @@ const Index: React.FC<{}> = () => {
                 <TabPanels>
                   <TabPanel>
                     <Table variant="striped" colorScheme="teal">
-                      <TableCaption>
-                        Imperial to metric conversion factors
-                      </TableCaption>
                       <Thead>
                         <Tr>
-                          <Th>To convert</Th>
-                          <Th>into</Th>
-                          <Th isNumeric>multiply by</Th>
+                          <Th>Amount</Th>
+                          <Th>Price</Th>
                         </Tr>
                       </Thead>
                       <Tbody>
                         <Tr>
-                          <Td>inches</Td>
-                          <Td>millimetres (mm)</Td>
-                          <Td isNumeric>25.4</Td>
+                          <Td>{"< 3 kg"}</Td>
+                          <Td>Rp. 30.000 (Flat)</Td>
                         </Tr>
                         <Tr>
-                          <Td>feet</Td>
-                          <Td>centimetres (cm)</Td>
-                          <Td isNumeric>30.48</Td>
+                          <Td>3 - 10 kg</Td>
+                          <Td>Rp. 9000 (per kg)</Td>
                         </Tr>
                         <Tr>
-                          <Td>yards</Td>
-                          <Td>metres (m)</Td>
-                          <Td isNumeric>0.91444</Td>
+                          <Td>{"> 10kg"}</Td>
+                          <Td>Rp. 8000 (per kg)</Td>
                         </Tr>
                       </Tbody>
                     </Table>
                   </TabPanel>
                   <TabPanel>
                     <Table variant="striped" colorScheme="teal">
-                      <TableCaption>
-                        Imperial to metric conversion factors
-                      </TableCaption>
                       <Thead>
                         <Tr>
-                          <Th>To convert</Th>
-                          <Th>into</Th>
-                          <Th isNumeric>multiply by</Th>
+                          <Th>Amount</Th>
+                          <Th>Price</Th>
                         </Tr>
                       </Thead>
                       <Tbody>
                         <Tr>
-                          <Td>inches</Td>
-                          <Td>millimetres (mm)</Td>
-                          <Td isNumeric>25.4</Td>
+                          <Td>{"< 3 kg"}</Td>
+                          <Td>Rp. 40.000 (Flat)</Td>
                         </Tr>
                         <Tr>
-                          <Td>feet</Td>
-                          <Td>centimetres (cm)</Td>
-                          <Td isNumeric>30.48</Td>
+                          <Td>3 - 10 kg</Td>
+                          <Td>Rp. 10000 (per kg)</Td>
                         </Tr>
                         <Tr>
-                          <Td>yards</Td>
-                          <Td>metres (m)</Td>
-                          <Td isNumeric>0.91444</Td>
+                          <Td>{"> 10kg"}</Td>
+                          <Td>Rp. 9000 (per kg)</Td>
+                        </Tr>
+                      </Tbody>
+                    </Table>
+                  </TabPanel>
+                  <TabPanel>
+                    <Table variant="striped" colorScheme="teal">
+                      <Thead>
+                        <Tr>
+                          <Th>Amount</Th>
+                          <Th>Price</Th>
+                        </Tr>
+                      </Thead>
+                      <Tbody>
+                        <Tr>
+                          <Td>{"< 3 kg"}</Td>
+                          <Td>Rp. 50.000 (Flat)</Td>
+                        </Tr>
+                        <Tr>
+                          <Td>3 - 10 kg</Td>
+                          <Td>Rp. 11000 (per kg)</Td>
+                        </Tr>
+                        <Tr>
+                          <Td>{"> 10kg"}</Td>
+                          <Td>Rp. 10000 (per kg)</Td>
                         </Tr>
                       </Tbody>
                     </Table>

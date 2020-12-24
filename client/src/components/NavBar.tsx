@@ -45,7 +45,17 @@ export const NavBar: React.FC<NavBarProps> = ({}) => {
     body = (
       <>
         <Box>
-          <Button mr={6} size="lg" variant="ghost">
+          <Button
+            mr={6}
+            size="lg"
+            variant="ghost"
+            onClick={() =>
+              window.scrollTo({
+                top: 3200,
+                behavior: "smooth",
+              })
+            }
+          >
             <Link style={{ textDecoration: "none" }}>
               <Text fontSize="xl">Pricelist</Text>
             </Link>
@@ -105,6 +115,7 @@ export const NavBar: React.FC<NavBarProps> = ({}) => {
       zIndex={10}
       maxH={70}
       p={{ base: 3, md: 0 }}
+      boxShadow={"lg"}
     >
       <Box maxH={"70px"} verticalAlign={"center"}>
         <NextLink href="/">
