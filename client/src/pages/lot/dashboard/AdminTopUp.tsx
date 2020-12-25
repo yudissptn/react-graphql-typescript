@@ -15,7 +15,7 @@ import {
 import {
   useTopUpListQuery,
   useSetTopUpStatusMutation,
-  TopUpStatus
+  TopUpStatus,
 } from "../../../generated/graphql";
 import { format } from "date-fns";
 import Link from "next/link";
@@ -24,7 +24,7 @@ import { TriangleDownIcon } from "@chakra-ui/icons";
 import gql from "graphql-tag";
 
 interface AdminMainProps {
-  admin: string
+  admin: string;
 }
 
 const AdminTopUp: React.FC<AdminMainProps> = ({ admin }) => {
@@ -35,7 +35,7 @@ const AdminTopUp: React.FC<AdminMainProps> = ({ admin }) => {
     },
     notifyOnNetworkStatusChange: true,
   });
-  const [setTopUp] = useSetTopUpStatusMutation()
+  const [setTopUp] = useSetTopUpStatusMutation();
 
   const statusSelection = ["PLACED", "CONFIRMED", "REJECTED"];
 
@@ -61,44 +61,47 @@ const AdminTopUp: React.FC<AdminMainProps> = ({ admin }) => {
     return <>Loading</>;
   }
 
+  if (!data?.topUpList || !data?.topUpList.topUpList) {
+    return <>Error</>;
+  }
+
   const handleChangeStatus = async (status: TopUpStatus, id: number) => {
     await setTopUp({
       variables: {
         options: {
           status,
-          id
-        }
+          id,
+        },
       },
       update: (cache) => {
         const selectedTopUpId = cache.readFragment<{
           id: number;
-          status: TopUpStatus
+          status: TopUpStatus;
         }>({
-          id: "TopupBalance:"+ id,
+          id: "TopupBalance:" + id,
           fragment: gql`
             fragment _ on TopupBalance {
               id
               status
             }
-          `
-        })
+          `,
+        });
 
-        if(selectedTopUpId){
+        if (selectedTopUpId) {
           cache.writeFragment({
-            id: "TopupBalance:"+ id,
+            id: "TopupBalance:" + id,
             fragment: gql`
               fragment __ on TopupBalance {
                 status
                 adminId
               }
             `,
-            data: { status,  adminId: admin}
-          })
+            data: { status, adminId: admin },
+          });
         }
-      }
-
-    })
-  }
+      },
+    });
+  };
 
   return (
     <Flex direction="column">
@@ -227,7 +230,10 @@ const AdminTopUp: React.FC<AdminMainProps> = ({ admin }) => {
                             {statusSelection.map((item) => (
                               <MenuItem
                                 key={item + t.status}
-                                onClick={() => t.status !== "CONFIRMED" && handleChangeStatus(item as TopUpStatus, t.id)}
+                                onClick={() =>
+                                  t.status !== "CONFIRMED" &&
+                                  handleChangeStatus(item as TopUpStatus, t.id)
+                                }
                               >
                                 {item}
                               </MenuItem>
@@ -262,15 +268,16 @@ const AdminTopUp: React.FC<AdminMainProps> = ({ admin }) => {
                 mx={"auto"}
                 isLoading={loading}
                 onClick={() => {
-                  fetchMore && fetchMore({
-                    variables: {
-                      limit: variables?.limit,
-                      cursor:
-                        data.topUpList?.topUpList[
-                          data.topUpList?.topUpList.length - 1
-                        ].createdAt,
-                    },
-                  });
+                  fetchMore &&
+                    fetchMore({
+                      variables: {
+                        limit: variables?.limit,
+                        cursor:
+                          data.topUpList?.topUpList[
+                            data.topUpList?.topUpList.length - 1
+                          ].createdAt,
+                      },
+                    });
                 }}
               />
             ) : null}

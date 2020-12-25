@@ -35,7 +35,6 @@ const Login: React.FC<registerProps> = ({}) => {
                     },
                   },
                 });
-                cache.evict({ fieldName: "order:{}" });
               },
             });
             if (response.data?.loginCustomer.errors) {

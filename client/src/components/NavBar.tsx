@@ -7,7 +7,6 @@ import {
   Heading,
   IconButton,
   Text,
-  Spacer,
   Drawer,
   DrawerBody,
   DrawerContent,
@@ -19,7 +18,7 @@ import NextLink from "next/link";
 import { useCustomerQuery, useLogoutMutation } from "../generated/graphql";
 import { isServer } from "../utils/isServer";
 import { useApolloClient } from "@apollo/client";
-import { HamburgerIcon, CloseIcon } from "@chakra-ui/icons";
+import { HamburgerIcon } from "@chakra-ui/icons";
 import { useRouter } from "next/router";
 import { useDisclosure } from "@chakra-ui/react";
 
@@ -32,9 +31,7 @@ export const NavBar: React.FC<NavBarProps> = ({}) => {
   const { data, loading } = useCustomerQuery({
     skip: isServer(),
   });
-  const [show, setShow] = React.useState(false);
   const registerRef = useRef<HTMLButtonElement>(null);
-  const handleToggle = () => setShow(!show);
   const { isOpen, onOpen, onClose } = useDisclosure();
   let body = null;
 
@@ -63,7 +60,7 @@ export const NavBar: React.FC<NavBarProps> = ({}) => {
         </Box>
         <Box h={50}>
           <NextLink href={"/login"}>
-            <Button mr={6} mb={show ? 5 : 0} size="lg" variant="ghost">
+            <Button mr={6} size="lg" variant="ghost">
               <Link style={{ textDecoration: "none" }}>
                 <Text fontSize="xl">Login</Text>
               </Link>
@@ -127,10 +124,7 @@ export const NavBar: React.FC<NavBarProps> = ({}) => {
         </NextLink>
       </Box>
       <Box display={{ base: "block", md: "none" }} onClick={onOpen}>
-        <IconButton
-          aria-label="navbar-options"
-          icon={show ? <CloseIcon /> : <HamburgerIcon />}
-        />
+        <IconButton aria-label="navbar-options" icon={<HamburgerIcon />} />
       </Box>
       <Flex
         p={3}

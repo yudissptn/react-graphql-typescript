@@ -34,7 +34,7 @@ import React, { useState, useEffect } from "react";
 import { withApollo } from "../utils/withApollo";
 import { NavBarWrapper } from "../components/NavBarWrapper";
 import { Logout } from "../components/Logout";
-import RadioCard from "./RadioCard";
+import RadioCard from "../components/RadioCard";
 import { format } from "date-fns";
 import { addCurrency } from "../utils/communUtils";
 import { Formik, Form, Field, FieldProps } from "formik";
@@ -425,8 +425,6 @@ const createOrder: React.FC<createOrderProps> = ({}) => {
                   </Tabs>
                 </Box>
               </Flex>
-              <pre>{JSON.stringify(values, null, 2)}</pre>
-              <pre>{JSON.stringify(errors, null, 2)}</pre>
             </Form>
           );
         }}

@@ -1,4 +1,4 @@
-import { Flex, Icon, Link, Text } from "@chakra-ui/react";
+import { Flex, Icon, Text } from "@chakra-ui/react";
 import React from "react";
 import {
   RiWhatsappLine,
@@ -6,7 +6,6 @@ import {
   RiInstagramLine,
 } from "react-icons/ri";
 import { AiOutlineMail } from "react-icons/ai";
-import NextLink from "next/link";
 
 interface FooterProps {}
 

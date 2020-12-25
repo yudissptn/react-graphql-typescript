@@ -22,7 +22,6 @@ import {
   Tr,
   Th,
   Td,
-  TableCaption,
 } from "@chakra-ui/react";
 import { Carousel } from "../components/Carousel";
 import { LocationDetails } from "../utils/commonInterface";

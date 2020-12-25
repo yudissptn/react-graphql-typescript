@@ -1,6 +1,6 @@
 import React from "react";
 import { withApollo } from "../../../utils/withApollo";
-import { Flex, Text } from "@chakra-ui/react";
+import { Flex } from "@chakra-ui/react";
 import AdminMainContent from "./AdminMainContent";
 import AdminTopUp from "./AdminTopUp";
 import AdminAddAdmin from "./AdminAddAdmin";
@@ -10,15 +10,18 @@ interface AdminContentProps {
   admin: string;
 }
 
-const AdminContent: React.FC<AdminContentProps> = ({ contentSelected, admin }) => {
+const AdminContent: React.FC<AdminContentProps> = ({
+  contentSelected,
+  admin,
+}) => {
   let showedContent;
 
   switch (contentSelected) {
     case "addadmin":
-      showedContent = <AdminAddAdmin admin={admin}/>;
+      showedContent = <AdminAddAdmin admin={admin} />;
       break;
     case "topup":
-      showedContent = <AdminTopUp admin={admin}/>;
+      showedContent = <AdminTopUp admin={admin} />;
       break;
     default:
       showedContent = <AdminMainContent />;

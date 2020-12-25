@@ -1,7 +1,7 @@
 import { useIdentifyLockerQuery } from "../generated/graphql";
 
 export const useLockerId = (lockerId: number) => {
-  const { data, error } = useIdentifyLockerQuery({
+  const { data } = useIdentifyLockerQuery({
     variables: {
       lockerId,
     },

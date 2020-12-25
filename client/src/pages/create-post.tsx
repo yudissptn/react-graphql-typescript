@@ -6,7 +6,6 @@ import {
   useCreatePostMutation,
   useAddProfilePictureMutation,
   useMeQuery,
-  useCustomerQuery,
 } from "../generated/graphql";
 import { useRouter } from "next/router";
 import { Layout } from "../components/Layout";
@@ -28,9 +27,6 @@ const createOrder: React.FC<createOrderProps> = ({}) => {
   const { data } = useMeQuery({
     skip: isServer(),
   });
-  const { data: custData } = useCustomerQuery({
-    skip: isServer(),
-  });
 
   const onDrop = useCallback(
     async ([acceptedFiles]) => {
@@ -49,7 +45,7 @@ const createOrder: React.FC<createOrderProps> = ({}) => {
     maxSize: 1024000,
   });
   return (
-    <Layout variant="small">
+    <Layout variant="small" mt={0}>
       <Formik
         initialValues={{ title: "", text: "", pictUrl: "" }}
         onSubmit={async (values) => {

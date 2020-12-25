@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Formik, Form, Field, FieldProps, useField } from "formik";
+import { Formik, Form, Field, FieldProps } from "formik";
 import {
   Box,
   Button,
@@ -19,9 +19,6 @@ import {
 import { Wrapper } from "../components/Wrapper";
 import { InputField } from "../components/InputField";
 import {
-  useRegisterMutation,
-  MeQuery,
-  MeDocument,
   useRegisterCustomerMutation,
   CustomerQuery,
   CustomerDocument,
@@ -29,7 +26,7 @@ import {
 import { toErrorMap } from "../utils/toErrorMap";
 import { useRouter } from "next/router";
 import { withApollo } from "../utils/withApollo";
-import { useState, InputHTMLAttributes, useEffect } from "react";
+import { useState, useEffect } from "react";
 
 const DobPicker: React.FC<{}> = ({}) => {
   const [date, setDate] = useState({ day: "01", month: "01", year: "1998" });
@@ -54,7 +51,7 @@ const DobPicker: React.FC<{}> = ({}) => {
   return (
     <Flex>
       <Field name="dob" initialValues="01-01-2000">
-        {({ form, field, meta }: FieldProps) => {
+        {({ form }: FieldProps) => {
           useEffect(() => {
             form.setFieldValue("dob", `${date.year}-${date.month}-${date.day}`);
           }, [date]);
@@ -108,10 +105,9 @@ interface registerProps {}
 
 const Register: React.FC<registerProps> = ({}) => {
   const router = useRouter();
-  const [register] = useRegisterMutation();
   const [registerCustomer] = useRegisterCustomerMutation();
   return (
-    <Wrapper variant="small">
+    <Wrapper variant="small" mt={0}>
       <Formik
         initialValues={{
           email: "",

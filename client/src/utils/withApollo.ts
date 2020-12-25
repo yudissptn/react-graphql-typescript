@@ -1,11 +1,6 @@
 import { createWithApollo } from "./createWithApollo";
 import { ApolloClient, InMemoryCache } from "@apollo/client";
-import {
-  CustomerOrderResponse,
-  PaginatedTopUp,
-  PaginatedPosts,
-} from "../generated/graphql";
-import { Order } from "../generated/graphql";
+import { CustomerOrderResponse, PaginatedTopUp } from "../generated/graphql";
 import { NextPageContext } from "next";
 import { createUploadLink } from "apollo-upload-client";
 
@@ -50,15 +45,13 @@ const createClient = (ctx: NextPageContext) =>
             topUpList: {
               keyArgs: [],
               merge(
-                existing: PaginatedTopUp | undefined,
+                existing: PaginatedTopUp | undefined = undefined,
                 incoming: PaginatedTopUp
               ): PaginatedTopUp {
-                console.log("existing: ", existing);
-                console.log("incoming: ", incoming);
                 return {
                   topUpList: [
                     ...(existing?.topUpList || []),
-                    ...incoming.topUpList,
+                    ...(incoming.topUpList || []),
                   ],
                   hasMore: incoming.hasMore,
                 };

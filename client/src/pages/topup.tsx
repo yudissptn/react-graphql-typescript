@@ -42,7 +42,7 @@ const Topup: React.FC<TopupProps> = ({}) => {
   const router = useRouter();
   const [requestTopUp] = useRequestTopUpMutation();
   const [addProfilePicture] = useAddProfilePictureMutation();
-  const { data: dataCust, loading } = useIsAuth();
+  const { data: dataCust } = useIsAuth();
 
   useEffect(() => {
     console.log(uploadedPict);
@@ -74,7 +74,7 @@ const Topup: React.FC<TopupProps> = ({}) => {
             console.log(errorUpload[0].message);
           }
 
-          const { data, errors } = await requestTopUp({
+          const { errors } = await requestTopUp({
             variables: {
               pictUrl: pictUrl?.addProfilePicture.Location || "",
               amount: +amount,

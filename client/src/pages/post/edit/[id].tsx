@@ -17,14 +17,14 @@ export const EditPost = ({}) => {
   const { data, loading } = usePostQuery({
     skip: intId === -1,
     variables: {
-      id: intId,
+      id: +intId,
     },
   });
   const [updatePost] = useUpdatePostMutation();
 
   if (loading) {
     return (
-      <Layout>
+      <Layout mt={0}>
         <div>Loading...</div>
       </Layout>
     );
@@ -32,17 +32,17 @@ export const EditPost = ({}) => {
 
   if (!data?.post) {
     return (
-      <Layout>
+      <Layout mt={0}>
         <Box>Could not find post</Box>
       </Layout>
     );
   }
   return (
-    <Layout variant="small">
+    <Layout variant="small" mt={0}>
       <Formik
         initialValues={{ title: data.post.title, text: data.post.text }}
         onSubmit={async (values) => {
-          await updatePost({ variables: { id: intId, ...values } });
+          await updatePost({ variables: { id: +intId, ...values } });
           router.back();
         }}
       >

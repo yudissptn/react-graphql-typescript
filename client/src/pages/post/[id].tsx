@@ -10,7 +10,7 @@ export const Post = ({}) => {
 
   if (loading) {
     return (
-      <Layout>
+      <Layout mt={0}>
         <div>Loading...</div>
       </Layout>
     );
@@ -18,7 +18,7 @@ export const Post = ({}) => {
 
   if (error) {
     return (
-      <Layout>
+      <Layout mt={0}>
         <div>{error.message}</div>
       </Layout>
     );
@@ -26,14 +26,14 @@ export const Post = ({}) => {
 
   if (!data?.post) {
     return (
-      <Layout>
+      <Layout mt={0}>
         <Box>Could not find post</Box>
       </Layout>
     );
   }
 
   return (
-    <Layout>
+    <Layout mt={0}>
       <Heading mb={4}>{data.post.title}</Heading>
       <Box mb={4}>{data.post.text}</Box>
       <EditDeletePostButton

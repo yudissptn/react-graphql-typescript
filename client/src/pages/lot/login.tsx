@@ -34,7 +34,6 @@ const Login: React.FC<registerProps> = ({}) => {
                     identifyAdmin: data?.loginAdmin.admin,
                   },
                 });
-                cache.evict({ fieldName: "order:{}" });
               },
             });
             if (response.data?.loginAdmin.errors) {

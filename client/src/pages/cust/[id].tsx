@@ -16,7 +16,6 @@ import { Logout } from "../../components/Logout";
 import { NavBarWrapper } from "../../components/NavBarWrapper";
 import { useCustomerOrderQuery } from "../../generated/graphql";
 import { addCurrency } from "../../utils/communUtils";
-import { useGetIntId } from "../../utils/useGetIntId";
 import { withApollo } from "../../utils/withApollo";
 import useIsAuth from "../../utils/useIsAuth";
 import { format } from "date-fns";
@@ -28,7 +27,6 @@ export const CustomerPage = ({}) => {
   const router = useRouter();
   const [iconColor, setIconColor] = useState("whitesmoke");
   const { data, loading } = useIsAuth();
-  const intId = useGetIntId();
   const { data: orderData, loading: orderLoading } = useCustomerOrderQuery({
     notifyOnNetworkStatusChange: true,
   });
