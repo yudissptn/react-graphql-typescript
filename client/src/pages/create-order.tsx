@@ -200,7 +200,6 @@ const createOrder: React.FC<createOrderProps> = ({}) => {
                   },
                 },
               });
-              cache.evict({ fieldName: "customerOrder:{}" });
               const existingCustomerBalance = cache.readQuery<CustomerQuery>({
                 query: CustomerDocument,
               });
